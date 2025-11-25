@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заказ товаров из Китая в Беларусь</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-center gap-3">
+                <div class="text-center">
+                    <h1 class="text-2xl md:text-3xl font-bold">Из Китая с Любовью</h1>
+                    <p class="text-purple-200 text-sm mt-1">❤️ 🇨🇳 → 🇧🇾 ❤️</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Intro Section -->
+        <section class="bg-white rounded-2xl card-shadow p-6 md:p-8 mb-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span class="text-2xl">👋</span>
+                <span>Привет!</span>
+            </h2>
+            <p class="text-gray-700 mb-2">
+                Я помогаю выкупить любой товар напрямую с китайских площадок, проверяю качество и помогаю доставить до РБ.
+            </p>
+            <p class="text-gray-700 mb-4">
+                Работаю с физическими лицами и ИП.
+            </p>
+
+            <div class="mt-4 border-t border-gray-200 pt-4">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <span>📦</span>
+                    <span>Приём заказов</span>
+                </h3>
+                <ul class="list-disc list-inside space-y-2 text-gray-700 mb-3">
+                    <li>
+                        🚛 <strong>Заказы от 10 кг</strong> можно оформлять <strong>в любой день недели</strong> — принимаются без ограничений.
+                    </li>
+                    <li>
+                        📦 <strong>Мелкие заказы до 10 кг</strong> принимаются <strong>в установленные дни</strong> — расписание приёма можно посмотреть в <strong>Telegram-группе</strong>.
+                    </li>
+                </ul>
+                <a href="https://t.me/from_china_with_love25" target="_blank" class="inline-flex items-center gap-2 text-purple-700 font-semibold hover:text-purple-900">
+                    <span>👉</span>
+                    <span>Перейти в группу Telegram</span>
+                </a>
+
+                <div class="mt-6 bg-orange-50 border border-orange-200 rounded-xl p-4 text-sm text-gray-800 space-y-3">
+                    <p class="font-semibold text-orange-700">
+                        ❗Примерный срок доставки с момента отправки со склада в Китае: <span class="underline">40–55 дней</span>.
+                    </p>
+                    <p>
+                        Сначала груз прибывает из Китая в Москву, затем пересылается в Беларусь:
+                    </p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Автолайт на ваш адрес — если вес заказа <strong>от 10 кг</strong>.</li>
+                        <li>Если вес <strong>до 10 кг</strong> — отправка <strong>Европочтой</strong> или <strong>Белпочтой</strong> за счёт заказчика.</li>
+                    </ul>
+                    <p class="text-xs text-orange-800 leading-relaxed">
+                        ❗Обратите внимание, что при перевозке возможны форс-мажоры на границе, неблагоприятные погодные условия и другие факторы, которые могут повлиять на сроки доставки. Также я не несу ответственность за повреждения товара при транспортировке — это риск, который необходимо учитывать.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Check Order Status -->
+        <div class="bg-white rounded-2xl card-shadow p-6 md:p-8 mb-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span class="text-2xl">🔍</span> Проверить статус заказа
+            </h2>
+            <div class="flex gap-3">
+                <input type="text" id="checkOrderNumber" placeholder="Введите номер заказа (например: BY-001)" 
+                    class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition uppercase">
+                <button onclick="checkOrderStatus()" 
+                    class="gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition">
+                    Проверить
+                </button>
+            </div>
+            <div id="orderStatusResult" class="mt-4 hidden">
+                <!-- Status result will appear here -->
+            </div>
+        </div>
+
+        <!-- Order Form -->
+        <div class="bg-white rounded-2xl card-shadow p-6 md:p-8 mb-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span class="text-2xl">📦</span> Оформление заказа
+            </h2>
+
+            <!-- Customer Info -->
+            <div class="grid md:grid-cols-2 gap-4 mb-6 pb-6 border-b border-gray-200">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Ваше имя и фамилия *</label>
+                    <input type="text" id="customerName" placeholder="Иван Иванов" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Телефон *</label>
+                    <input type="tel" id="customerPhone" placeholder="+375 29 123 45 67" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Telegram (для связи)</label>
+                    <input type="text" id="customerMessenger" placeholder="@username" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                </div>
+            </div>
+
+            <!-- Restrictions Section -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-red-600 mb-3 flex items-center gap-2">
+                    <span>❗</span>
+                    <span>Ограничения по перевозке товаров через границу</span>
+                </h3>
+                <p class="text-sm text-gray-700 mb-3">
+                    В связи с ситуацией на границе, <strong>следующие товары запрещены к отправке</strong>:
+                </p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 text-sm">
+                    <li>🟤 <strong>Порошки</strong></li>
+                    <li>💧 <strong>Жидкости</strong></li>
+                    <li>🍪 <strong>Еда</strong></li>
+                    <li>🌡️ <strong>Товары, содержащие ртуть</strong></li>
+                    <li>🔋 <strong>Батарейки</strong></li>
+                    <li>🪖 <strong>Товары, связанные с военной техникой или двойного назначения</strong></li>
+                    <li>🛸 <strong>Дроны</strong></li>
+                    <li>❌ <strong>Наркотические вещества и алкоголь</strong></li>
+                    <li>💊 <strong>Медикаменты</strong></li>
+                </ul>
+            </div>
+
+            <!-- Items Section -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🛒</span> Товары для заказа
+                </h3>
+                
+                <div id="itemsList" class="space-y-4">
+                    <!-- Items will be added here -->
+                </div>
+
+                <button onclick="addItem()" 
+                    class="mt-4 w-full py-3 border-2 border-dashed border-purple-300 text-purple-600 rounded-xl hover:bg-purple-50 hover:border-purple-400 transition flex items-center justify-center gap-2 font-medium">
+                    <span class="text-xl">+</span> Добавить товар
+                </button>
+            </div>
+
+            <!-- Price Calculator -->
+            <div class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-5 border border-purple-100">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🧮</span> Расчёт стоимости
+                </h3>
+                
+                <!-- Fixed Exchange Rate Info -->
+                <div class="bg-white rounded-xl p-4 mb-4 border border-purple-200 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700 font-medium">💱 Курс конвертации:</span>
+                        <span class="text-xl font-bold text-purple-600">1 ¥ = 0.65 BYN</span>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-purple-100 pt-3">
+                        <span class="text-gray-700 font-medium">🚚 Стоимость доставки:</span>
+                        <span class="text-xl font-bold text-purple-600">27 BYN</span>
+                    </div>
+                </div>
+
+                <!-- Totals Display -->
+                <div class="bg-white rounded-xl p-4 space-y-3">
+                    <div class="flex justify-between items-center text-gray-600">
+                        <span>Стоимость товаров:</span>
+                        <span id="itemsTotal" class="font-medium">0 ¥ = 0.00 BYN</span>
+                    </div>
+                    <div class="border-t border-gray-200 pt-3 flex justify-between items-center">
+                        <span class="text-lg font-bold text-gray-800">ИТОГО К ОПЛАТЕ:</span>
+                        <div class="text-right">
+                            <span id="grandTotal" class="text-2xl font-bold text-purple-600">0.00 BYN</span>
+                            <p id="minOrderWarning" class="text-sm text-red-500 font-medium mt-1">⚠️ Минимум 100 BYN</p>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 pt-3 space-y-2">
+                        <p class="text-sm text-purple-700 bg-purple-50 p-2 rounded-lg">
+                            📋 Минимальная сумма заказа: <strong>100 BYN</strong>
+                        </p>
+                        <p class="text-sm text-orange-600 bg-orange-50 p-2 rounded-lg">
+                            ⚠️ Стоимость доставки оплачивается отдельно после прибытия заказа в Беларусь
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="mb-6 bg-green-50 rounded-xl p-5 border border-green-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>💳</span> Оплата по реквизитам
+                </h3>
+                
+                <div class="space-y-4">
+                    <!-- Bank Card -->
+                    <div class="bg-white rounded-xl p-4 border border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700">💳 Банковская карта</span>
+                            <button onclick="copyToClipboard('4585 2200 1514 4818', this)" 
+                                class="copy-btn text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-lg hover:bg-purple-200 transition">
+                                Копировать
+                            </button>
+                        </div>
+                        <p class="text-xl font-mono font-bold text-gray-800">4585 2200 1514 4818</p>
+                        <p class="text-sm text-gray-500 mt-1">Имя держателя карты: VADZIM KUIS</p>
+                        <p class="text-sm text-gray-500">Срок действия карты: 08/30</p>
+                    </div>
+
+                    <!-- Bank Transfer IBAN -->
+                    <div class="bg-white rounded-xl p-4 border border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700">🏦 Банковский перевод (IBAN)</span>
+                            <button onclick="copyToClipboard('BY86 ALFA 3014 32SA 0J00 1027 0000', this)" 
+                                class="copy-btn text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-lg hover:bg-purple-200 transition">
+                                Копировать
+                            </button>
+                        </div>
+                        <p class="text-lg font-mono font-bold text-gray-800 break-all">BY86 ALFA 3014 32SA 0J00 1027 0000</p>
+                        <p class="text-sm text-gray-500 mt-1">Банк: ЗАО «АЛЬФА-БАНК» | БИК: ALFABY2X</p>
+                        <p class="text-sm text-gray-500">Получатель: Куис Вадим Викторович</p>
+                        <p class="text-sm text-gray-500">УНП BE6333993</p>
+                    </div>
+
+                    <!-- Payment Instructions -->
+                    <div class="bg-yellow-50 rounded-xl p-4 border border-yellow-200">
+                        <p class="text-sm text-yellow-800">
+                            <strong>⚠️ Важно:</strong> После оплаты отправьте скриншот чека в Telegram <a href="https://t.me/vadimkuis" target="_blank" class="text-purple-600 font-semibold hover:underline">@vadimkuis</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Comments -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Дополнительные пожелания</label>
+                <textarea id="comments" rows="3" placeholder="Любые дополнительные комментарии к заказу..."
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"></textarea>
+            </div>
+
+            <!-- Offer Agreement Notice -->
+            <div class="mb-4 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-gray-800">
+                <p class="mb-1">
+                    📄 Оплачивая заказ, вы подтверждаете, что ознакомились и согласны с <strong>договором офертой</strong>
+                </p>
+                <a href="https://www.notion.so/29d3a35fa355800bbf2bf9e40fb8ed6b?pvs=21" target="_blank" class="inline-flex items-center gap-1 text-blue-700 font-semibold hover:text-blue-900 hover:underline">
+                    <span>👉</span>
+                    <span>Ознакомиться с договором офертой</span>
+                </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button onclick="submitOrder()" 
+                class="w-full gradient-bg text-white py-4 rounded-xl font-semibold text-lg hover:opacity-90 transition transform hover:scale-[1.02] active:scale-[0.98] shadow-lg">
+                📨 Отправить заказ
+            </button>
+        </div>
+
+        <!-- Orders List -->
+        <div id="ordersSection" class="hidden">
+            <div class="bg-white rounded-2xl card-shadow p-6 md:p-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span class="text-2xl">📋</span> Ваши заказы
+                </h2>
+                <div id="ordersList" class="space-y-4">
+                    <!-- Orders will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full text-center transform scale-95 opacity-0 transition-all" id="modalContent">
+            <div class="text-6xl mb-4">✅</div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Заказ отправлен!</h3>
+            <div class="bg-purple-100 rounded-xl p-4 mb-4">
+                <p class="text-sm text-purple-600 mb-1">Номер вашего заказа:</p>
+                <p id="modalOrderNumber" class="text-2xl font-bold text-purple-700"></p>
+                <p class="text-xs text-purple-500 mt-1">Сохраните номер для проверки статуса</p>
+            </div>
+            <p class="text-gray-600 mb-4">Сумма к оплате: <span id="modalTotal" class="font-bold text-purple-600"></span></p>
+            <p class="text-gray-600 mb-6">Оплатите заказ по реквизитам выше и отправьте нам скриншот чека.</p>
+            <button onclick="closeModal()" 
+                class="gradient-bg text-white px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition">
+                Отлично!
+            </button>
+        </div>
+    </div>
+
+    <!-- Copy Toast -->
+    <div id="copyToast" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+        ✓ Скопировано в буфер обмена
+    </div>
+
+    <!-- Admin Login Button -->
+    <div class="fixed bottom-4 right-4 z-40">
+        <button onclick="showAdminLogin()" 
+            class="bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition" title="Вход для администратора">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full transform scale-95 opacity-0 transition-all" id="adminLoginContent">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">🔐 Вход в админку</h3>
+                <button onclick="closeAdminLogin()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Логин</label>
+                    <input type="text" id="adminLogin" placeholder="admin" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Пароль</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••" 
+                        onkeypress="if(event.key==='Enter') adminAuth()"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                </div>
+                <p id="adminError" class="text-red-500 text-sm hidden">Неверный логин или пароль</p>
+                <button onclick="adminAuth()" 
+                    class="w-full gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition">
+                    Войти
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="fixed inset-0 bg-gray-100 z-50 hidden overflow-auto">
+        <header class="bg-gray-800 text-white py-4 shadow-lg sticky top-0 z-10">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">⚙️</span>
+                    <h1 class="text-xl font-bold">Панель администратора</h1>
+                </div>
+                <button onclick="closeAdminPanel()" 
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Выйти
+                </button>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 py-6 max-w-6xl">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-xl p-5 card-shadow">
+                    <div class="text-3xl mb-2">📦</div>
+                    <p class="text-gray-500 text-sm">Всего заказов</p>
+                    <p id="statTotalOrders" class="text-2xl font-bold text-gray-800">0</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 card-shadow">
+                    <div class="text-3xl mb-2">⏳</div>
+                    <p class="text-gray-500 text-sm">Ожидают оплаты</p>
+                    <p id="statPending" class="text-2xl font-bold text-orange-500">0</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 card-shadow">
+                    <div class="text-3xl mb-2">✅</div>
+                    <p class="text-gray-500 text-sm">Оплачено</p>
+                    <p id="statPaid" class="text-2xl font-bold text-green-500">0</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 card-shadow">
+                    <div class="text-3xl mb-2">💰</div>
+                    <p class="text-gray-500 text-sm">Сумма к оплате</p>
+                    <p id="statTotalSum" class="text-2xl font-bold text-purple-600">0 BYN</p>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="bg-white rounded-xl p-2 card-shadow mb-6 flex flex-wrap gap-2">
+                <button onclick="filterOrders('all')" id="filter-all" 
+                    class="filter-btn px-4 py-2 rounded-lg font-medium transition bg-purple-100 text-purple-700">
+                    Все заказы
+                </button>
+                <button onclick="filterOrders('Ожидает оплаты')" id="filter-pending" 
+                    class="filter-btn px-4 py-2 rounded-lg font-medium transition hover:bg-gray-100">
+                    ⏳ Ожидают оплаты
+                </button>
+                <button onclick="filterOrders('Оплачен')" id="filter-paid" 
+                    class="filter-btn px-4 py-2 rounded-lg font-medium transition hover:bg-gray-100">
+                    💳 Оплачены
+                </button>
+                <button onclick="filterOrders('В работе')" id="filter-work" 
+                    class="filter-btn px-4 py-2 rounded-lg font-medium transition hover:bg-gray-100">
+                    🔄 В работе
+                </button>
+                <button onclick="filterOrders('Доставлен')" id="filter-done" 
+                    class="filter-btn px-4 py-2 rounded-lg font-medium transition hover:bg-gray-100">
+                    ✅ Доставлены
+                </button>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="bg-white rounded-xl card-shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="text-left px-4 py-3 text-sm font-semibold text-gray-600">Дата</th>
+                                <th class="text-left px-4 py-3 text-sm font-semibold text-gray-600">Клиент</th>
+                                <th class="text-left px-4 py-3 text-sm font-semibold text-gray-600">Товары</th>
+                                <th class="text-left px-4 py-3 text-sm font-semibold text-gray-600">Сумма</th>
+                                <th class="text-left px-4 py-3 text-sm font-semibold text-gray-600">Статус</th>
+                                <th class="text-left px-4 py-3 text-sm font-semibold text-gray-600">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersList" class="divide-y divide-gray-100">
+                            <!-- Orders will be rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noOrdersAdmin" class="hidden text-center py-12 text-gray-500">
+                    <div class="text-5xl mb-3">📭</div>
+                    <p>Заказов пока нет</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderDetailsModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-auto transform scale-95 opacity-0 transition-all" id="orderDetailsContent">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">📋 Детали заказа</h3>
+                <button onclick="closeOrderDetails()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="orderDetailsBody" class="p-6">
+                <!-- Order details will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-6 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2024 Доставка из Китая в Беларусь</p>
+            <p class="text-sm mt-1">Работаем с Taobao, 1688, Pinduoduo, Alibaba и другими площадками</p>
+        </div>
+    </footer>
+
+    <script>
+        let itemCount = 0;
+        let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        let orderCounter = parseInt(localStorage.getItem('orderCounter') || '0');
+
+        // === НАСТРОЙКИ TELEGRAM-БОТА ===
+        // Замените значения ниже на ваши реальные данные
+        const TG_BOT_TOKEN = '8256719844:AAHFB9uQS4d3WCyx7t4cLnhpye3XqQBc0jk'; // токен бота от @BotFather
+        const TG_CHAT_ID = '273298263';     // ваш chat_id (число), куда слать заказы
+
+        async function sendOrderToTelegram(order) {
+            if (!TG_BOT_TOKEN || !TG_CHAT_ID ||
+                TG_BOT_TOKEN === 'PASTE_YOUR_BOT_TOKEN_HERE' ||
+                TG_CHAT_ID === 'PASTE_YOUR_CHAT_ID_HERE') {
+                // Если вы ещё не указали реальные данные, просто ничего не отправляем
+                return;
+            }
+
+            const apiUrl = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
+            const text = formatOrderForTelegram(order);
+
+            try {
+                await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TG_CHAT_ID,
+                        text,
+                        parse_mode: 'HTML'
+                    })
+                });
+            } catch (e) {
+                console.error('Ошибка отправки в Telegram:', e);
+            }
+        }
+
+        function formatOrderForTelegram(order) {
+            let lines = [];
+            lines.push('📦 <b>НОВЫЙ ЗАКАЗ</b>');
+            lines.push('');
+            lines.push(`<b>Номер:</b> ${order.orderNumber}`);
+            lines.push(`<b>Дата:</b> ${order.date}`);
+            lines.push('');
+            lines.push('<b>Клиент:</b>');
+            lines.push(`👤 ${order.customer.name}`);
+            lines.push(`📱 ${order.customer.phone}`);
+            if (order.customer.messenger) {
+                lines.push(`💬 Telegram: ${order.customer.messenger}`);
+            }
+            lines.push('');
+            lines.push('<b>Товары:</b>');
+            order.items.forEach((item, index) => {
+                lines.push(`\n${index + 1}. ${item.link}`);
+                let props = [];
+                if (item.size) props.push(`📏 ${item.size}`);
+                if (item.color) props.push(`🎨 ${item.color}`);
+                if (item.quantity) props.push(`🔢 ${item.quantity} шт.`);
+                if (item.price) props.push(`💰 ${item.price} ¥`);
+                if (props.length) lines.push(props.join(' | '));
+                if (item.needPhoto) lines.push('📸 Нужно фото со склада');
+                if (item.note) lines.push(`📝 ${item.note}`);
+            });
+            lines.push('');
+            lines.push(`<b>Сумма к оплате:</b> ${order.total} BYN (без доставки)`);
+            if (order.comments) {
+                lines.push('');
+                lines.push('<b>Комментарий клиента:</b>');
+                lines.push(order.comments);
+            }
+            return lines.join('\n');
+        }
+
+        // Генерация читаемого номера заказа
+        function generateOrderNumber() {
+            orderCounter++;
+            localStorage.setItem('orderCounter', orderCounter.toString());
+            return 'BY-' + String(orderCounter).padStart(3, '0');
+        }
+
+        // Проверка статуса заказа по номеру
+        function checkOrderStatus() {
+            const input = document.getElementById('checkOrderNumber');
+            const resultDiv = document.getElementById('orderStatusResult');
+            const orderNumber = input.value.trim().toUpperCase();
+
+            if (!orderNumber) {
+                alert('Введите номер заказа');
+                return;
+            }
+
+            const order = orders.find(o => o.orderNumber === orderNumber);
+
+            if (order) {
+                const statusInfo = getStatusInfo(order.status);
+                resultDiv.innerHTML = `
+                    <div class="bg-gradient-to-r ${statusInfo.bgGradient} rounded-xl p-5 border ${statusInfo.border}">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-lg font-bold ${statusInfo.textColor}">${order.orderNumber}</span>
+                            <span class="px-3 py-1 rounded-full text-sm font-medium ${statusInfo.badgeClass}">
+                                ${statusInfo.icon} ${order.status}
+                            </span>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <p class="text-gray-700"><strong>Дата заказа:</strong> ${order.date}</p>
+                            <p class="text-gray-700"><strong>Сумма:</strong> ${order.total} BYN</p>
+                            <p class="text-gray-700"><strong>Товаров:</strong> ${order.items.length} шт.</p>
+                        </div>
+                        ${getStatusTimeline(order.status)}
+                    </div>
+                `;
+                resultDiv.classList.remove('hidden');
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="bg-red-50 rounded-xl p-5 border border-red-200">
+                        <div class="flex items-center gap-3 text-red-700">
+                            <span class="text-2xl">❌</span>
+                            <div>
+                                <p class="font-semibold">Заказ не найден</p>
+                                <p class="text-sm text-red-600">Проверьте правильность номера заказа</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                resultDiv.classList.remove('hidden');
+            }
+        }
+
+        function getStatusInfo(status) {
+            const statuses = {
+                'Ожидает оплаты': { icon: '⏳', bgGradient: 'from-orange-50 to-yellow-50', border: 'border-orange-200', textColor: 'text-orange-700', badgeClass: 'bg-orange-100 text-orange-700' },
+                'Оплачен': { icon: '💳', bgGradient: 'from-blue-50 to-indigo-50', border: 'border-blue-200', textColor: 'text-blue-700', badgeClass: 'bg-blue-100 text-blue-700' },
+                'Выкуплен': { icon: '🛒', bgGradient: 'from-purple-50 to-pink-50', border: 'border-purple-200', textColor: 'text-purple-700', badgeClass: 'bg-purple-100 text-purple-700' },
+                'Отправлен из Китая': { icon: '✈️', bgGradient: 'from-cyan-50 to-blue-50', border: 'border-cyan-200', textColor: 'text-cyan-700', badgeClass: 'bg-cyan-100 text-cyan-700' },
+                'Прибыл в Москву': { icon: '🏢', bgGradient: 'from-amber-50 to-orange-50', border: 'border-amber-200', textColor: 'text-amber-700', badgeClass: 'bg-amber-100 text-amber-700' },
+                'Доставляется в Беларусь': { icon: '🚚', bgGradient: 'from-teal-50 to-green-50', border: 'border-teal-200', textColor: 'text-teal-700', badgeClass: 'bg-teal-100 text-teal-700' },
+                'Доставлен': { icon: '✅', bgGradient: 'from-green-50 to-emerald-50', border: 'border-green-200', textColor: 'text-green-700', badgeClass: 'bg-green-100 text-green-700' }
+            };
+            return statuses[status] || statuses['Ожидает оплаты'];
+        }
+
+        function getStatusTimeline(currentStatus) {
+            const allStatuses = [
+                { key: 'Ожидает оплаты', label: 'Ожидает оплаты', icon: '⏳' },
+                { key: 'Оплачен', label: 'Оплачен', icon: '💳' },
+                { key: 'Выкуплен', label: 'Выкуплен', icon: '🛒' },
+                { key: 'Отправлен из Китая', label: 'Отправлен', icon: '✈️' },
+                { key: 'Прибыл в Москву', label: 'В Москве', icon: '🏢' },
+                { key: 'Доставляется в Беларусь', label: 'В пути', icon: '🚚' },
+                { key: 'Доставлен', label: 'Доставлен', icon: '✅' }
+            ];
+
+            const currentIndex = allStatuses.findIndex(s => s.key === currentStatus);
+
+            return `
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <p class="text-xs text-gray-500 mb-2">Статус доставки:</p>
+                    <div class="flex items-center justify-between">
+                        ${allStatuses.map((status, index) => `
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm ${index <= currentIndex ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-400'}">
+                                    ${index <= currentIndex ? '✓' : index + 1}
+                                </div>
+                                <span class="text-xs mt-1 ${index <= currentIndex ? 'text-green-600 font-medium' : 'text-gray-400'} hidden md:block">${status.label}</span>
+                            </div>
+                            ${index < allStatuses.length - 1 ? `<div class="flex-1 h-1 mx-1 ${index < currentIndex ? 'bg-green-500' : 'bg-gray-200'}"></div>` : ''}
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add first item on load
+        document.addEventListener('DOMContentLoaded', () => {
+            addItem();
+            displayOrders();
+            calculateTotal();
+        });
+
+        function addItem() {
+            itemCount++;
+            const currentCount = itemCount;
+            const itemHtml = `
+                <div class="item-card bg-gray-50 rounded-xl p-5 border border-gray-200 transition-all" id="item-${currentCount}">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
+                            Товар #${currentCount}
+                        </span>
+                        <button onclick="removeItem(${currentCount})" class="text-red-500 hover:text-red-700 transition p-1 remove-btn ${currentCount === 1 ? 'hidden' : ''}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">🔗 Ссылка на товар *</label>
+                            <input type="url" name="link-${currentCount}" placeholder="https://taobao.com/item/..." 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">📏 Размер</label>
+                                <input type="text" name="size-${currentCount}" placeholder="M, L, 42, 27см..." 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">🎨 Цвет</label>
+                                <input type="text" name="color-${currentCount}" placeholder="Черный, Белый..." 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">🔢 Количество</label>
+                                <input type="number" name="quantity-${currentCount}" value="1" min="1" 
+                                    onchange="calculateTotal()" oninput="calculateTotal()"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">💰 Цена (¥)</label>
+                                <input type="number" name="price-${currentCount}" placeholder="0" min="0" step="0.01"
+                                    onchange="calculateTotal()" oninput="calculateTotal()"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 pt-2">
+                            <label class="flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" name="photo-${currentCount}" 
+                                    class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer">
+                                <span class="text-sm font-medium text-gray-700">📸 Нужно фото со склада в Китае</span>
+                                <span class="text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">бесплатно</span>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">📝 Примечание к товару</label>
+                            <input type="text" name="note-${currentCount}" placeholder="Дополнительная информация..." 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('itemsList').insertAdjacentHTML('beforeend', itemHtml);
+            updateRemoveButtons();
+        }
+
+        function removeItem(id) {
+            const item = document.getElementById(`item-${id}`);
+            item.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                item.remove();
+                updateRemoveButtons();
+                calculateTotal();
+            }, 200);
+        }
+
+        function updateRemoveButtons() {
+            const items = document.querySelectorAll('.item-card');
+            items.forEach((item, index) => {
+                const btn = item.querySelector('.remove-btn');
+                if (btn) {
+                    if (items.length === 1) {
+                        btn.classList.add('hidden');
+                    } else {
+                        btn.classList.remove('hidden');
+                    }
+                }
+            });
+        }
+
+        function calculateTotal() {
+            const exchangeRate = 0.65; // Фиксированный курс 1 юань = 0.65 BYN
+            const minOrder = 100; // Минимальная сумма заказа
+
+            let totalYuan = 0;
+            const itemCards = document.querySelectorAll('.item-card');
+            
+            itemCards.forEach(card => {
+                const id = card.id.split('-')[1];
+                const price = parseFloat(card.querySelector(`[name="price-${id}"]`).value) || 0;
+                const quantity = parseInt(card.querySelector(`[name="quantity-${id}"]`).value) || 1;
+                totalYuan += price * quantity;
+            });
+
+            const itemsByn = totalYuan * exchangeRate;
+            const grandTotal = itemsByn; // Только стоимость товаров, без доставки
+
+            document.getElementById('itemsTotal').textContent = `${totalYuan.toFixed(2)} ¥ = ${itemsByn.toFixed(2)} BYN`;
+            
+            const grandTotalEl = document.getElementById('grandTotal');
+            const warningEl = document.getElementById('minOrderWarning');
+            
+            grandTotalEl.textContent = `${grandTotal.toFixed(2)} BYN`;
+            
+            // Визуальная индикация минимальной суммы
+            if (grandTotal < minOrder) {
+                grandTotalEl.classList.remove('text-purple-600');
+                grandTotalEl.classList.add('text-red-500');
+                warningEl.classList.remove('hidden');
+            } else {
+                grandTotalEl.classList.add('text-purple-600');
+                grandTotalEl.classList.remove('text-red-500');
+                warningEl.classList.add('hidden');
+            }
+
+            return grandTotal;
+        }
+
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show toast
+                const toast = document.getElementById('copyToast');
+                toast.classList.remove('opacity-0');
+                toast.classList.add('opacity-100');
+                
+                // Change button text temporarily
+                const originalText = button.textContent;
+                button.textContent = '✓ Скопировано';
+                button.classList.add('bg-green-100', 'text-green-700');
+                button.classList.remove('bg-purple-100', 'text-purple-700');
+                
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                    toast.classList.remove('opacity-100');
+                    button.textContent = originalText;
+                    button.classList.remove('bg-green-100', 'text-green-700');
+                    button.classList.add('bg-purple-100', 'text-purple-700');
+                }, 2000);
+            });
+        }
+
+        function submitOrder() {
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const messenger = document.getElementById('customerMessenger').value.trim();
+            const comments = document.getElementById('comments').value.trim();
+            const minOrder = 100; // Минимальная сумма заказа
+
+            if (!name || !phone) {
+                alert('Пожалуйста, заполните имя и телефон!');
+                return;
+            }
+
+            const items = [];
+            const itemCards = document.querySelectorAll('.item-card');
+            
+            itemCards.forEach((card, index) => {
+                const id = card.id.split('-')[1];
+                const link = card.querySelector(`[name="link-${id}"]`).value.trim();
+                const size = card.querySelector(`[name="size-${id}"]`).value.trim();
+                const color = card.querySelector(`[name="color-${id}"]`).value.trim();
+                const quantity = card.querySelector(`[name="quantity-${id}"]`).value;
+                const price = card.querySelector(`[name="price-${id}"]`).value.trim();
+                const note = card.querySelector(`[name="note-${id}"]`).value.trim();
+                const needPhoto = card.querySelector(`[name="photo-${id}"]`).checked;
+
+                if (link) {
+                    items.push({ link, size, color, quantity, price, note, needPhoto });
+                }
+            });
+
+            if (items.length === 0) {
+                alert('Добавьте хотя бы один товар со ссылкой!');
+                return;
+            }
+
+            const grandTotal = calculateTotal();
+
+            // Проверка минимальной суммы заказа
+            if (grandTotal < minOrder) {
+                alert(`⚠️ Минимальная сумма заказа — ${minOrder} BYN\n\nТекущая сумма: ${grandTotal.toFixed(2)} BYN\nНе хватает: ${(minOrder - grandTotal).toFixed(2)} BYN`);
+                return;
+            }
+
+            const orderNumber = generateOrderNumber();
+            
+            const order = {
+                id: Date.now(),
+                orderNumber: orderNumber,
+                date: new Date().toLocaleString('ru-RU'),
+                customer: { name, phone, messenger },
+                items,
+                comments,
+                total: grandTotal.toFixed(2),
+                status: 'Ожидает оплаты'
+            };
+
+            orders.unshift(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            // Show success modal with order number and total
+            document.getElementById('modalOrderNumber').textContent = orderNumber;
+            document.getElementById('modalTotal').textContent = grandTotal.toFixed(2) + ' BYN';
+            showModal();
+
+            // Reset form
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('customerMessenger').value = '';
+            document.getElementById('comments').value = '';
+            document.getElementById('itemsList').innerHTML = '';
+            itemCount = 0;
+            addItem();
+            calculateTotal();
+
+            displayOrders();
+        }
+
+        function showModal() {
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('modalContent');
+            content.classList.add('scale-95', 'opacity-0');
+            content.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 200);
+        }
+
+        function displayOrders() {
+            const section = document.getElementById('ordersSection');
+            const list = document.getElementById('ordersList');
+
+            if (orders.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            section.classList.remove('hidden');
+            list.innerHTML = orders.map(order => `
+                <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
+                    <div class="flex flex-wrap justify-between items-start gap-2 mb-3">
+                        <div>
+                            <span class="text-sm text-gray-500">${order.date}</span>
+                            <h4 class="font-semibold text-gray-800">${order.customer.name}</h4>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 rounded-full text-sm font-medium ${
+                                order.status === 'Ожидает оплаты' ? 'bg-orange-100 text-orange-700' : 
+                                order.status === 'Оплачен' ? 'bg-blue-100 text-blue-700' :
+                                order.status === 'В работе' ? 'bg-yellow-100 text-yellow-700' : 
+                                'bg-green-100 text-green-700'
+                            }">
+                                ${order.status}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        ${order.items.map((item, i) => `
+                            <div class="bg-gray-50 rounded-lg p-3 text-sm">
+                                <div class="flex items-start gap-2">
+                                    <span class="text-purple-600 font-medium">${i + 1}.</span>
+                                    <div class="flex-1 min-w-0">
+                                        <a href="${item.link}" target="_blank" class="text-blue-600 hover:underline break-all">${item.link.length > 50 ? item.link.substring(0, 50) + '...' : item.link}</a>
+                                        <div class="flex flex-wrap gap-2 mt-1 text-gray-600">
+                                            ${item.size ? `<span>📏 ${item.size}</span>` : ''}
+                                            ${item.color ? `<span>🎨 ${item.color}</span>` : ''}
+                                            ${item.quantity ? `<span>🔢 ${item.quantity} шт.</span>` : ''}
+                                            ${item.price ? `<span>💰 ${item.price}¥</span>` : ''}
+                                        </div>
+                                        ${item.note ? `<p class="text-gray-500 mt-1">📝 ${item.note}</p>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${order.comments ? `<p class="mt-3 text-sm text-gray-600 bg-yellow-50 p-2 rounded">💬 ${order.comments}</p>` : ''}
+                    <div class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-gray-100">
+                        <div class="text-lg font-bold text-purple-600">
+                            💰 ${order.total || '0.00'} BYN
+                            ${order.weight ? `<span class="text-sm font-normal text-gray-500">(${order.weight} кг)</span>` : ''}
+                        </div>
+                        <button onclick="deleteOrder(${order.id})" class="text-sm text-red-500 hover:text-red-700 transition">
+                            🗑️ Удалить
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteOrder(id) {
+            if (confirm('Удалить этот заказ?')) {
+                orders = orders.filter(o => o.id !== id);
+                localStorage.setItem('orders', JSON.stringify(orders));
+                displayOrders();
+            }
+        }
+
+        // ============ ADMIN FUNCTIONS ============
+        const ADMIN_LOGIN = 'admin';
+        const ADMIN_PASSWORD = '2433332';
+        let currentFilter = 'all';
+
+        function showAdminLogin() {
+            const modal = document.getElementById('adminLoginModal');
+            const content = document.getElementById('adminLoginContent');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            document.getElementById('adminLogin').focus();
+        }
+
+        function closeAdminLogin() {
+            const modal = document.getElementById('adminLoginModal');
+            const content = document.getElementById('adminLoginContent');
+            content.classList.add('scale-95', 'opacity-0');
+            content.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.getElementById('adminLogin').value = '';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminError').classList.add('hidden');
+            }, 200);
+        }
+
+        function adminAuth() {
+            const login = document.getElementById('adminLogin').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if (login === ADMIN_LOGIN && password === ADMIN_PASSWORD) {
+                closeAdminLogin();
+                setTimeout(() => {
+                    openAdminPanel();
+                }, 300);
+            } else {
+                document.getElementById('adminError').classList.remove('hidden');
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        function openAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            updateStats();
+            renderAdminOrders();
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function updateStats() {
+            const total = orders.length;
+            const pending = orders.filter(o => o.status === 'Ожидает оплаты').length;
+            const paid = orders.filter(o => o.status === 'Оплачен' || o.status === 'В работе' || o.status === 'Доставлен').length;
+            const totalSum = orders.filter(o => o.status === 'Ожидает оплаты').reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+
+            document.getElementById('statTotalOrders').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statPaid').textContent = paid;
+            document.getElementById('statTotalSum').textContent = totalSum.toFixed(2) + ' BYN';
+        }
+
+        function filterOrders(status) {
+            currentFilter = status;
+            
+            // Update button styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-purple-100', 'text-purple-700');
+                btn.classList.add('hover:bg-gray-100');
+            });
+            
+            const activeBtn = event.target;
+            activeBtn.classList.add('bg-purple-100', 'text-purple-700');
+            activeBtn.classList.remove('hover:bg-gray-100');
+            
+            renderAdminOrders();
+        }
+
+        function renderAdminOrders() {
+            const tbody = document.getElementById('adminOrdersList');
+            const noOrders = document.getElementById('noOrdersAdmin');
+            
+            let filteredOrders = orders;
+            if (currentFilter !== 'all') {
+                filteredOrders = orders.filter(o => o.status === currentFilter);
+            }
+
+            if (filteredOrders.length === 0) {
+                tbody.innerHTML = '';
+                noOrders.classList.remove('hidden');
+                return;
+            }
+
+            noOrders.classList.add('hidden');
+            
+            tbody.innerHTML = filteredOrders.map(order => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3">
+                        <div class="text-sm text-gray-900">${order.date}</div>
+                        <div class="text-xs text-gray-500">#${order.id}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-gray-900">${order.customer.name}</div>
+                        <div class="text-sm text-gray-500">${order.customer.phone}</div>
+                        ${order.customer.messenger ? `<div class="text-xs text-purple-600">${order.customer.messenger}</div>` : ''}
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="text-sm text-gray-600">${order.items.length} шт.</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="font-bold text-purple-600">${order.total || '0.00'} BYN</span>
+                        ${order.weight ? `<div class="text-xs text-gray-500">${order.weight} кг</div>` : ''}
+                    </td>
+                    <td class="px-4 py-3">
+                        <select onchange="updateOrderStatus(${order.id}, this.value)" 
+                            class="text-sm rounded-lg border-gray-300 focus:ring-purple-500 focus:border-purple-500 ${getStatusClass(order.status)}">
+                            <option value="Ожидает оплаты" ${order.status === 'Ожидает оплаты' ? 'selected' : ''}>⏳ Ожидает оплаты</option>
+                            <option value="Оплачен" ${order.status === 'Оплачен' ? 'selected' : ''}>💳 Оплачен</option>
+                            <option value="Выкуплен" ${order.status === 'Выкуплен' ? 'selected' : ''}>🛒 Выкуплен</option>
+                            <option value="Отправлен из Китая" ${order.status === 'Отправлен из Китая' ? 'selected' : ''}>✈️ Отправлен из Китая</option>
+                            <option value="Прибыл в Москву" ${order.status === 'Прибыл в Москву' ? 'selected' : ''}>🏢 Прибыл в Москву</option>
+                            <option value="Доставляется в Беларусь" ${order.status === 'Доставляется в Беларусь' ? 'selected' : ''}>🚚 Доставляется в Беларусь</option>
+                            <option value="Доставлен" ${order.status === 'Доставлен' ? 'selected' : ''}>✅ Доставлен</option>
+                        </select>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex gap-2">
+                            <button onclick="viewOrderDetails(${order.id})" 
+                                class="text-blue-600 hover:text-blue-800 transition" title="Подробнее">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                            <button onclick="adminDeleteOrder(${order.id})" 
+                                class="text-red-500 hover:text-red-700 transition" title="Удалить">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Ожидает оплаты': return 'bg-orange-50 text-orange-700';
+                case 'Оплачен': return 'bg-blue-50 text-blue-700';
+                case 'В работе': return 'bg-yellow-50 text-yellow-700';
+                case 'Доставлен': return 'bg-green-50 text-green-700';
+                default: return '';
+            }
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                updateStats();
+                displayOrders();
+            }
+        }
+
+        function viewOrderDetails(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const modal = document.getElementById('orderDetailsModal');
+            const content = document.getElementById('orderDetailsContent');
+            const body = document.getElementById('orderDetailsBody');
+
+            body.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Customer Info -->
+                    <div class="bg-gray-50 rounded-xl p-4">
+                        <h4 class="font-semibold text-gray-800 mb-3">👤 Клиент</h4>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-500">Имя:</span>
+                                <p class="font-medium">${order.customer.name}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Телефон:</span>
+                                <p class="font-medium">${order.customer.phone}</p>
+                            </div>
+                            ${order.customer.messenger ? `
+                            <div class="col-span-2">
+                                <span class="text-gray-500">Telegram/Viber:</span>
+                                <p class="font-medium text-purple-600">${order.customer.messenger}</p>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Order Info -->
+                    <div class="bg-purple-50 rounded-xl p-4">
+                        <h4 class="font-semibold text-gray-800 mb-3">📦 Информация о заказе</h4>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-500">Дата:</span>
+                                <p class="font-medium">${order.date}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Сумма:</span>
+                                <p class="font-bold text-purple-600">${order.total} BYN</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Вес:</span>
+                                <p class="font-medium">${order.weight || '—'} кг</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items -->
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">🛒 Товары (${order.items.length})</h4>
+                        <div class="space-y-3">
+                            ${order.items.map((item, i) => `
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-start gap-3">
+                                        <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm font-medium">${i + 1}</span>
+                                        <div class="flex-1 min-w-0">
+                                            <a href="${item.link}" target="_blank" class="text-blue-600 hover:underline break-all text-sm">${item.link}</a>
+                                            <div class="flex flex-wrap gap-3 mt-2 text-sm">
+                                                ${item.size ? `<span class="bg-gray-100 px-2 py-1 rounded">📏 ${item.size}</span>` : ''}
+                                                ${item.color ? `<span class="bg-gray-100 px-2 py-1 rounded">🎨 ${item.color}</span>` : ''}
+                                                ${item.quantity ? `<span class="bg-gray-100 px-2 py-1 rounded">🔢 ${item.quantity} шт.</span>` : ''}
+                                                ${item.price ? `<span class="bg-yellow-100 px-2 py-1 rounded">💰 ${item.price} ¥</span>` : ''}
+                                                ${item.needPhoto ? `<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded">📸 Нужно фото</span>` : ''}
+                                            </div>
+                                            ${item.note ? `<p class="text-gray-600 mt-2 text-sm">📝 ${item.note}</p>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    ${order.comments ? `
+                    <div class="bg-yellow-50 rounded-xl p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">💬 Комментарий</h4>
+                        <p class="text-gray-700">${order.comments}</p>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeOrderDetails() {
+            const modal = document.getElementById('orderDetailsModal');
+            const content = document.getElementById('orderDetailsContent');
+            content.classList.add('scale-95', 'opacity-0');
+            content.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 200);
+        }
+
+        function adminDeleteOrder(id) {
+            if (confirm('Удалить этот заказ?')) {
+                orders = orders.filter(o => o.id !== id);
+                localStorage.setItem('orders', JSON.stringify(orders));
+                updateStats();
+                renderAdminOrders();
+                displayOrders();
+            }
+        }
+    </script>
+</body>
+</html>
