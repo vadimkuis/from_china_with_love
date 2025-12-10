@@ -24,6 +24,7 @@
             justify-content: center;
             z-index: 1000;
         }
+        .modal.hidden { display: none !important; }
         .modal-content {
             background: white;
             padding: 2rem;
@@ -103,6 +104,67 @@
             .text-balance { text-wrap: balance; }
             input, select, textarea, button { font-size: 16px !important; } /* убирает зум на iOS */
         }
+
+        /* =============================
+           Client UI polish
+        ==============================*/
+        .client-form-card,
+        .client-orders-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .client-form-card::before,
+        .client-orders-card::before {
+            content: '';
+            position: absolute;
+            inset: -40%;
+            background: radial-gradient(circle at 30% 30%, rgba(99,102,241,0.08), transparent 45%),
+                        radial-gradient(circle at 80% 10%, rgba(236,72,153,0.08), transparent 35%),
+                        radial-gradient(circle at 60% 70%, rgba(99,102,241,0.06), transparent 30%);
+            z-index: 0;
+        }
+        .client-form-card > *,
+        .client-orders-card > * { position: relative; z-index: 1; }
+        .client-order-card {
+            border: 1px solid rgba(148,163,184,0.25);
+            background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+            box-shadow: 0 20px 45px rgba(79,70,229,0.08);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .client-order-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 60px rgba(79,70,229,0.12);
+        }
+        .pill-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ede9fe, #eef2ff);
+            color: #4338ca;
+            border: 1px solid rgba(67,56,202,0.12);
+        }
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: #475569;
+        }
+        .info-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.65rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+        }
+        .photo-grid button img { transition: transform .2s ease; }
+        .photo-grid button:hover img { transform: scale(1.05); }
     </style>
 </head>
 <body class="p-4">
@@ -229,7 +291,6 @@
 
                 <div class="mt-5 text-center text-xs flex flex-col gap-2">
                     <button onclick="showLogin()" class="text-purple-700 font-medium hover:text-purple-900 hover:underline">Уже есть аккаунт? Войти</button>
-                    <p class="text-gray-400">Нажимая «Создать аккаунт», вы соглашаетесь с договором-офертой.</p>
                 </div>
             </div>
         </div>
@@ -255,7 +316,7 @@
             <div class="grid lg:grid-cols-3 gap-6">
                 <!-- Форма заказа -->
                 <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white/80 backdrop-blur rounded-2xl shadow-2xl border border-white/40 p-6">
+                    <div class="bg-white/80 backdrop-blur rounded-2xl shadow-2xl border border-white/40 p-6 client-form-card">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="text-2xl">🛒</span>
                             <h2 class="text-2xl font-bold text-gray-800">Создать новый заказ</h2>
@@ -351,10 +412,23 @@
                             </div>
 
                             <!-- Чек оплаты -->
-                            <div class="rounded-2xl border border-dashed border-gray-300 p-4 bg-gray-50/80">
-                                <label class="block text-sm font-semibold mb-2 text-gray-700">Чек оплаты товара (необязательно)</label>
-                                <input type="file" id="paymentReceipt" accept="image/*" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-purple-500">
-                                <p class="text-xs text-gray-500 mt-2">Можно загрузить сейчас или позже в списке заказов</p>
+                            <div class="rounded-2xl border border-dashed border-purple-200 p-4 bg-purple-50/60">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-800">Чек оплаты товара (необязательно)</p>
+                                        <p class="text-xs text-gray-500">Поддерживаются JPG/PNG, до 10 МБ</p>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full bg-white text-purple-600 text-xs font-semibold border border-purple-200">Фото чека</span>
+                                </div>
+                                <label for="paymentReceipt" class="mt-3 block cursor-pointer rounded-xl border-2 border-dashed border-purple-200 bg-white/70 hover:bg-white transition p-4 text-center">
+                                    <div class="flex flex-col items-center gap-1 text-sm text-gray-600">
+                                        <span class="text-lg">📄</span>
+                                        <span class="font-semibold text-gray-800">Перетащите или выберите файл</span>
+                                        <span class="text-xs text-gray-500">Нажмите, чтобы загрузить чек</span>
+                                    </div>
+                                </label>
+                                <input type="file" id="paymentReceipt" accept="image/*" class="hidden">
+                                <p class="text-[11px] text-gray-500 mt-2">Можно загрузить сейчас или позже в списке заказов</p>
                             </div>
 
                             <!-- Договор-оферта -->
@@ -370,11 +444,16 @@
                     </div>
 
                     <!-- Список заказов -->
-                    <div class="bg-white/80 backdrop-blur rounded-2xl shadow-2xl border border-white/40 p-6">
+                    <div class="bg-white/80 backdrop-blur rounded-2xl shadow-2xl border border-white/40 p-6 client-orders-card">
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-                            <div class="flex items-center gap-2">
-                                <span class="text-2xl">📦</span>
-                                <h2 class="text-2xl font-bold text-gray-800">Мои заказы</h2>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl">📦</span>
+                                    <h2 class="text-2xl font-bold text-gray-800">Мои заказы</h2>
+                                </div>
+                                <button id="clientPaymentDetailsBtn" type="button" class="px-4 py-2 rounded-xl bg-yellow-50 text-yellow-800 text-sm font-semibold border border-yellow-200 hover:bg-yellow-100 transition">
+                                    💳 Реквизиты для оплаты
+                                </button>
                             </div>
                             <div class="relative w-full md:w-72">
                                 <input type="text" id="searchOrder" placeholder="Поиск по номеру (BY-01)" oninput="searchClientOrders()" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-purple-500">
@@ -1048,10 +1127,6 @@
     <div id="paymentModal" class="modal hidden">
         <div class="modal-content">
             <h2 class="text-2xl font-bold mb-4">Реквизиты для оплаты</h2>
-            <div class="bg-yellow-50 p-4 rounded-lg mb-4 border border-yellow-300">
-                <p class="font-semibold mb-2">Ваш заказ успешно создан!</p>
-                <p class="text-sm">Номер заказа: <span id="modalOrderNumber" class="font-bold"></span></p>
-            </div>
             <div class="bg-gray-50 p-4 rounded-lg mb-4">
                 <p class="font-semibold mb-2">Реквизиты для оплаты:</p>
                 <div id="modalPaymentDetails" class="text-sm whitespace-pre-line"></div>
@@ -1081,6 +1156,7 @@
                 });
                 if (typeof closeOfferModal === 'function') closeOfferModal();
                 if (typeof closePaymentModal === 'function') closePaymentModal();
+                // после полного скрытия — показываем только логин
                 document.getElementById('loginView').classList.remove('hidden');
             } catch (e) {
                 console.warn('Init view reset error:', e);
@@ -1088,17 +1164,40 @@
         });
 
         /* =============================
+           MODAL HELPERS (safe stubs)
+        ==============================*/
+        function showOfferModal() {
+            const m = document.getElementById('offerModal');
+            if (m) m.classList.remove('hidden');
+        }
+        function closeOfferModal() {
+            const m = document.getElementById('offerModal');
+            if (m) m.classList.add('hidden');
+        }
+        function showPaymentModal(orderNumber = '', paymentDetails = '') {
+            const m = document.getElementById('paymentModal');
+            if (!m) return;
+            const numEl = document.getElementById('modalOrderNumber');
+            const payEl = document.getElementById('modalPaymentDetails');
+            if (numEl) numEl.textContent = orderNumber;
+            if (payEl && paymentDetails) payEl.textContent = paymentDetails;
+            m.classList.remove('hidden');
+        }
+        function closePaymentModal() {
+            const m = document.getElementById('paymentModal');
+            if (m) m.classList.add('hidden');
+        }
+
+        /* =============================
            CORE / DATA INIT (SUPABASE)
            -----------------------------
            - Supabase client & helpers
            - Local fallback storage for offline
         ==============================*/
-        // Supabase credentials (defaulted to provided project; can be overridden via localStorage)
-        const SUPABASE_URL = localStorage.getItem('supabase_url') || 'https://becvuuxjxvjhuojpinfb.supabase.co';
-        const SUPABASE_KEY = localStorage.getItem('supabase_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlY3Z1dXhqeHZqaHVvanBpbmZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNzY0MDgsImV4cCI6MjA4MDg1MjQwOH0.FAznI4gEGCU3afTVdmzjlTNdLA7_39302pCYuo09bko';
-        const supabase = (SUPABASE_URL && SUPABASE_KEY)
-            ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-            : null;
+        // Supabase credentials (hardcoded to your project)
+        const SUPABASE_URL = 'https://becvuuxjxvjhuojpinfb.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlY3Z1dXhqeHZqaHVvanBpbmZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNzY0MDgsImV4cCI6MjA4MDg1MjQwOH0.FAznI4gEGCU3afTVdmzjlTNdLA7_39302pCYuo09bko';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Хэширование паролей (SHA-256)
         async function hashPassword(password) {
@@ -1121,13 +1220,35 @@
             paymentDetails: 'Карта: 1234 5678 9012 3456\nПолучатель: ООО "Доставка"\nБанк: Сбербанк',
             forbiddenItems: ['Оружие', 'Взрывчатые вещества', 'Наркотики', 'Контрафакт']
         };
+        let settingsId = null; // id строки настроек в Supabase (если есть)
         let orderCounter = 0;
 
         let currentUser = null;
         let currentWeightOrderId = null;
         let currentEditOrderId = null;
+        let clientSearchTerm = '';
 
         const statusFlow = ['Ожидает оплаты','Оплачен','Выкуплен','Отправлен из Китая','Прибыл в Москву','Доставляется в Беларусь','Доставлен'];
+
+        /* =============================
+           PHOTO MODAL (preview)
+        ==============================*/
+        function openPhotoModal(url) {
+            if (!url) return;
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[3000] p-4';
+            overlay.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-[90vw] max-h-[90vh] overflow-auto relative">
+                    <button class="absolute top-2 right-2 bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center" onclick="this.closest('.photo-overlay')?.remove()">✕</button>
+                    <img src="${url}" alt="Фото" class="block max-w-full max-h-[90vh] object-contain rounded-2xl">
+                </div>
+            `;
+            overlay.classList.add('photo-overlay');
+            overlay.addEventListener('click', (e)=>{
+                if (e.target === overlay) overlay.remove();
+            });
+            document.body.appendChild(overlay);
+        }
 
         /* =============================
            TOASTS / NOTIFICATIONS
@@ -1276,6 +1397,7 @@
                     return;
                 }
                 finalUser = {
+                    id: data.id,
                     fullName: data.full_name,
                     phone: data.phone,
                     telegram: data.telegram,
@@ -1297,6 +1419,8 @@
                 }
             }
 
+            // универсальный идентификатор пользователя (uuid из БД или телефон)
+            finalUser.userKey = finalUser.id || finalUser.phone;
             currentUser = finalUser;
             await initData();
             if (finalUser.isAdmin) {
@@ -1311,84 +1435,110 @@
            SUPABASE HELPERS (orders/settings)
         ==============================*/
         async function fetchSettings() {
-            if (supabase) {
-                const { data, error } = await supabase
-                    .from('settings')
-                    .select('*')
-                    .order('created_at', { ascending: false })
-                    .limit(1)
-                    .maybeSingle();
-                if (error) {
-                    console.warn('Ошибка загрузки настроек Supabase:', error.message);
-                }
-                if (data) {
-                    settings = {
-                        yuanRate: data.yuan_rate ?? settings.yuanRate,
-                        kgPrice: data.kg_price ?? settings.kgPrice,
-                        costYuan: data.cost_yuan ?? settings.costYuan,
-                        costKg: data.cost_kg ?? settings.costKg,
-                        taxPercent: data.tax_percent ?? settings.taxPercent,
-                        deliveryMethods: data.delivery_methods || settings.deliveryMethods,
-                        paymentDetails: data.payment_details || settings.paymentDetails,
-                        forbiddenItems: data.forbidden_items || settings.forbiddenItems
-                    };
+            try {
+                // Всегда работаем с одной строкой настроек id=1
+                settingsId = settingsId || 1;
+                if (supabase) {
+                    const { data, error } = await supabase
+                        .from('settings')
+                        .select('*')
+                        .eq('id', 1)
+                        .maybeSingle();
+
+                    if (error && error.code !== 'PGRST116') {
+                        console.warn('Ошибка загрузки настроек Supabase:', error.message);
+                        showToast('Ошибка загрузки настроек: ' + error.message, 'warning');
+                    }
+
+                    if (data) {
+                        settingsId = data.id ?? 1;
+                        settings = {
+                            yuanRate: Number(data.yuan_rate ?? settings.yuanRate),
+                            kgPrice: Number(data.kg_price ?? settings.kgPrice),
+                            costYuan: Number(data.cost_yuan ?? settings.costYuan),
+                            costKg: Number(data.cost_kg ?? settings.costKg),
+                            taxPercent: Number(data.tax_percent ?? settings.taxPercent),
+                            deliveryMethods: data.delivery_methods || settings.deliveryMethods,
+                            paymentDetails: data.payment_details || settings.paymentDetails,
+                            forbiddenItems: data.forbidden_items || settings.forbiddenItems
+                        };
+                    } else {
+                        // если настроек нет в БД — создаём по умолчанию с id=1
+                        const { data: created, error: createErr } = await supabase.from('settings').insert({
+                            id: 1,
+                            yuan_rate: settings.yuanRate,
+                            kg_price: settings.kgPrice,
+                            cost_yuan: settings.costYuan,
+                            cost_kg: settings.costKg,
+                            tax_percent: settings.taxPercent,
+                            delivery_methods: settings.deliveryMethods,
+                            payment_details: settings.paymentDetails,
+                            forbidden_items: settings.forbiddenItems
+                        }).select().maybeSingle();
+                        if (createErr) {
+                            console.error('Ошибка создания настроек:', createErr.message);
+                            showToast('Ошибка создания настроек: ' + createErr.message, 'error');
+                        }
+                        if (created) settingsId = created.id || 1;
+                    }
                 } else {
-                    // если настроек нет в БД — создаём по умолчанию
-                    await supabase.from('settings').insert({
-                        yuan_rate: settings.yuanRate,
-                        kg_price: settings.kgPrice,
-                        cost_yuan: settings.costYuan,
-                        cost_kg: settings.costKg,
-                        tax_percent: settings.taxPercent,
-                        delivery_methods: settings.deliveryMethods,
-                        payment_details: settings.paymentDetails,
-                        forbidden_items: settings.forbiddenItems
-                    });
+                    const storedSettings = localStorage.getItem('settings');
+                    if (storedSettings) {
+                        settings = JSON.parse(storedSettings);
+                    }
                 }
-            } else {
-                const storedSettings = localStorage.getItem('settings');
-                if (storedSettings) {
-                    settings = JSON.parse(storedSettings);
-                }
+            } catch (err) {
+                console.error('fetchSettings fatal:', err);
+                showToast('Ошибка загрузки настроек', 'error');
             }
         }
 
         async function persistSettings() {
-            if (supabase) {
-                const { error } = await supabase.from('settings').upsert({
-                    id: 1,
-                    yuan_rate: settings.yuanRate,
-                    kg_price: settings.kgPrice,
-                    cost_yuan: settings.costYuan,
-                    cost_kg: settings.costKg,
-                    tax_percent: settings.taxPercent,
-                    delivery_methods: settings.deliveryMethods,
-                    payment_details: settings.paymentDetails,
-                    forbidden_items: settings.forbiddenItems,
-                    updated_at: new Date().toISOString()
-                });
-                if (error) console.error('Не удалось сохранить настройки:', error.message);
-            } else {
-                saveSettings();
+            try {
+                settingsId = settingsId || 1;
+                if (supabase) {
+                    const payload = {
+                        id: settingsId,
+                        yuan_rate: Number(settings.yuanRate || 0),
+                        kg_price: Number(settings.kgPrice || 0),
+                        cost_yuan: Number(settings.costYuan || 0),
+                        cost_kg: Number(settings.costKg || 0),
+                        tax_percent: Number(settings.taxPercent || 0),
+                        delivery_methods: settings.deliveryMethods,
+                        payment_details: settings.paymentDetails,
+                        forbidden_items: settings.forbiddenItems
+                    };
+                    const { data, error } = await supabase.from('settings').upsert(payload).select().maybeSingle();
+                    if (error) {
+                        console.error('Не удалось сохранить настройки:', error.message);
+                        showToast('Ошибка сохранения настроек: ' + error.message, 'error');
+                    }
+                    if (data) settingsId = data.id || 1;
+                } else {
+                    saveSettings();
+                }
+            } catch (err) {
+                console.error('persistSettings fatal:', err);
+                showToast('Ошибка сохранения настроек', 'error');
             }
         }
 
-        function parseOrderRow(row) {
+        function parseOrderRow(row, products = []) {
             return {
                 id: row.order_number,
                 userId: row.user_id,
-                userName: row.user_name,
-                userTelegram: row.user_telegram,
+                userPhone: (row.users && row.users.phone) || row.user_phone || row.user_id || '',
+                userName: (row.users && row.users.full_name) || row.user_name || '',
+                userTelegram: (row.users && row.users.telegram) || row.user_telegram || '',
                 deliveryMethod: row.delivery_method,
                 deliveryDetails: row.delivery_details || {},
-                products: row.products || [],
+                products: products,
                 totalSum: Number(row.total_sum || 0),
                 receipt: row.receipt || null,
                 deliveryCost: row.delivery_cost === null ? null : Number(row.delivery_cost),
                 totalToPay: row.total_to_pay === null ? null : Number(row.total_to_pay),
                 deliveryReceipt: row.delivery_receipt || null,
                 totalWeight: Number(row.total_weight || 0),
-                productPhotos: row.product_photos || [],
                 status: row.status || 'Ожидает оплаты',
                 createdAt: row.created_at || new Date().toISOString()
             };
@@ -1398,40 +1548,102 @@
             return {
                 order_number: order.id,
                 user_id: order.userId,
-                user_name: order.userName,
-                user_telegram: order.userTelegram,
                 delivery_method: order.deliveryMethod,
                 delivery_details: order.deliveryDetails || {},
-                products: order.products || [],
                 total_sum: order.totalSum || 0,
                 receipt: order.receipt || null,
                 delivery_cost: order.deliveryCost === undefined ? null : order.deliveryCost,
                 total_to_pay: order.totalToPay === undefined ? null : order.totalToPay,
                 delivery_receipt: order.deliveryReceipt || null,
                 total_weight: order.totalWeight || 0,
-                product_photos: order.productPhotos || [],
                 status: order.status || 'Ожидает оплаты',
                 created_at: order.createdAt || new Date().toISOString()
             };
         }
 
+        // Загрузка списка пользователей (для админки)
+        async function fetchUsers() {
+            try {
+                if (supabase) {
+                    const { data, error } = await supabase
+                        .from('users')
+                        .select('id, full_name, phone, telegram, registered_at, created_at, is_admin')
+                        .order('registered_at', { ascending: true });
+                    if (error) throw error;
+                    users = (data || []).map(u => ({
+                        id: u.id,
+                        fullName: u.full_name,
+                        phone: u.phone,
+                        telegram: u.telegram,
+                        registeredAt: u.registered_at || u.created_at,
+                        isAdmin: !!u.is_admin
+                    }));
+                } else {
+                    const storedUsers = localStorage.getItem('users');
+                    users = storedUsers ? JSON.parse(storedUsers) : [];
+                }
+            } catch (err) {
+                console.error('fetchUsers error:', err);
+                showToast('Не удалось загрузить пользователей: ' + (err.message || err), 'warning');
+            }
+        }
+
         async function fetchOrders() {
             if (supabase) {
-                const { data, error } = await supabase
-                    .from('orders')
-                    .select('*')
-                    .order('created_at', { ascending: true });
-                if (error) {
-                    console.warn('Ошибка загрузки заказов Supabase:', error.message);
-                    return;
+                try {
+                    const { data: ordersData, error } = await supabase
+                        .from('orders')
+                        .select('*, users(full_name, telegram, phone), order_items(*)')
+                        .order('created_at', { ascending: true });
+                    if (error) {
+                        console.warn('Ошибка загрузки заказов Supabase:', error.message);
+                        showToast('Ошибка загрузки заказов: ' + error.message, 'warning');
+                        return;
+                    }
+
+                    // Если нет заказов — очищаем
+                    if (!ordersData || !ordersData.length) {
+                        orders = [];
+                        orderCounter = 0;
+                        return;
+                    }
+
+                    orders = (ordersData || []).map(row => {
+                        const prodRaw = Array.isArray(row.order_items) ? row.order_items : [];
+                        // маппим поля из snake_case в camelCase + дедупликация
+                        const seen = new Set();
+                        const prod = [];
+                        prodRaw.forEach(p => {
+                            if (!p || p.id == null) return;
+                            if (seen.has(p.id)) return;
+                            seen.add(p.id);
+                            prod.push({
+                                id: p.id,
+                                link: p.link,
+                                price: Number(p.price || 0),
+                                quantity: Number(p.quantity || 0),
+                                color: p.color || '',
+                                size: p.size || '',
+                                needPhoto: !!p.need_photo,
+                                comment: p.comment || '',
+                                trackingNumber: p.tracking_number || '',
+                                weight: Number(p.weight || 0),
+                                warehousePhoto: p.warehouse_photo || null,
+                                productPhoto: p.product_photo || null
+                            });
+                        });
+                        return parseOrderRow(row, prod);
+                    });
+
+                    const maxNum = orders.reduce((max, o) => {
+                        const n = parseInt((o.id || '').replace('BY-', '')) || 0;
+                        return Math.max(max, n);
+                    }, 0);
+                    orderCounter = Math.max(orderCounter, maxNum);
+                } catch (err) {
+                    console.error('fetchOrders fatal:', err);
+                    showToast('Ошибка загрузки заказов', 'error');
                 }
-                orders = (data || []).map(parseOrderRow);
-                // Определяем счётчик по максимальному номеру
-                const maxNum = orders.reduce((max, o) => {
-                    const n = parseInt((o.id || '').replace('BY-', '')) || 0;
-                    return Math.max(max, n);
-                }, 0);
-                orderCounter = Math.max(orderCounter, maxNum);
             } else {
                 const storedOrders = localStorage.getItem('orders');
                 if (storedOrders) {
@@ -1447,11 +1659,68 @@
 
         async function persistOrder(order) {
             if (supabase) {
-                const row = prepareOrderRow(order);
-                const { error } = await supabase.from('orders').upsert(row);
-                if (error) console.error('Не удалось сохранить заказ:', error.message);
+                try {
+                    // сохраняем товары отдельно от строки заказа
+                    const products = Array.isArray(order.products) ? order.products : [];
+                    // отсекаем пустые товары (без данных), чтобы не плодить пустые строки
+                    const filteredProducts = products.filter(p => {
+                        return (
+                            (p.link && p.link.trim() !== '') ||
+                            Number(p.price) > 0 ||
+                            Number(p.quantity) > 0 ||
+                            (p.color && p.color.trim() !== '') ||
+                            (p.size && p.size.trim() !== '') ||
+                            (p.comment && p.comment.trim() !== '') ||
+                            (p.trackingNumber && p.trackingNumber.trim() !== '') ||
+                            (p.needPhoto === true) ||
+                            Number(p.weight) > 0 ||
+                            p.warehousePhoto ||
+                            p.productPhoto
+                        );
+                    });
+
+                    const row = prepareOrderRow(order);
+                    const payload = { ...row };
+                    delete payload.products;
+
+                    const { data, error } = await supabase
+                        .from('orders')
+                        .upsert(payload, { onConflict: 'order_number' })
+                        .select('id');
+                    if (error) throw error;
+
+                    const orderId = data?.[0]?.id;
+                    if (orderId) {
+                        // удаляем старые позиции и вставляем новые
+                        await supabase.from('order_items').delete().eq('order_id', orderId);
+                        if (filteredProducts.length) {
+                            const itemsPayload = filteredProducts.map(p => ({
+                                order_id: orderId,
+                                link: p.link,
+                                price: p.price,
+                                quantity: p.quantity,
+                                color: p.color,
+                                size: p.size,
+                                need_photo: p.needPhoto,
+                                comment: p.comment,
+                                tracking_number: p.trackingNumber,
+                                weight: p.weight,
+                                warehouse_photo: p.warehousePhoto,
+                                product_photo: p.productPhoto
+                            }));
+                            const { error: insErr } = await supabase.from('order_items').insert(itemsPayload);
+                            if (insErr) throw insErr;
+                        }
+                    }
+                    return true;
+                } catch (err) {
+                    console.error('Не удалось сохранить заказ:', err.message || err);
+                    showToast('Не удалось сохранить заказ: ' + (err.message || err), 'error');
+                    return false;
+                }
             } else {
                 saveOrders();
+                return true;
             }
         }
 
@@ -1465,9 +1734,22 @@
             }
         }
 
+        // синхронизируем локальное состояние с сервером
+        async function syncOrdersFromServer() {
+            // Просто повторно тянем заказы с товарами и пользователями, как в fetchOrders
+            await fetchOrders();
+            const maxNum = orders.reduce((max, o) => {
+                const n = parseInt((o.id || '').replace('BY-', '')) || 0;
+                return Math.max(max, n);
+            }, 0);
+            orderCounter = Math.max(orderCounter, maxNum);
+            localStorage.setItem('orderCounter', orderCounter);
+        }
+
         async function initData() {
             await fetchSettings();
             await fetchOrders();
+            await syncOrdersFromServer();
             // orderCounter для локального режима
             const storedCounter = parseInt(localStorage.getItem('orderCounter') || '0', 10);
             orderCounter = Math.max(orderCounter, storedCounter);
@@ -1502,13 +1784,19 @@
                 forbiddenWarning.classList.add('hidden');
             }
 
+            // кнопка реквизитов в шапке «Мои заказы»
+            const payBtn = document.getElementById('clientPaymentDetailsBtn');
+            if (payBtn) {
+                payBtn.onclick = () => showPaymentModal('', settings.paymentDetails || '');
+            }
+
             document.getElementById('productsContainer').innerHTML = '';
             addProductRow();
 
             loadClientOrders();
         }
 
-        // Добавить строку товара
+        // Добавить строку товара (исправлено)
         function addProductRow() {
             const container = document.getElementById('productsContainer');
             const index = container.children.length;
@@ -1526,4 +1814,993 @@
                         <input type="url" required class="product-link w-full px-3 py-2 border rounded-lg text-sm" placeholder="https://...">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Цена (юани) *</n
+                        <label class="block text-sm font-medium mb-1">Цена (юани) *</label>
+                        <input type="number" min="0" step="0.01" required class="product-price w-full px-3 py-2 border rounded-lg text-sm" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Количество *</label>
+                        <input type="number" min="1" step="1" required class="product-qty w-full px-3 py-2 border rounded-lg text-sm" value="1">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Цвет</label>
+                        <input type="text" class="product-color w-full px-3 py-2 border rounded-lg text-sm" placeholder="Цвет">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Размер</label>
+                        <input type="text" class="product-size w-full px-3 py-2 border rounded-lg text-sm" placeholder="Размер">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="inline-flex items-center gap-2 text-sm font-medium mb-1">
+                            <input type="checkbox" class="product-need-photo h-4 w-4 text-purple-600"> Нужно фото со склада
+                        </label>
+                        <label class="block text-sm font-medium mb-1 mt-2">Комментарий</label>
+                        <textarea class="product-comment w-full px-3 py-2 border rounded-lg text-sm" rows="2" placeholder="Пожелания по заказу"></textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(productRow);
+            calculateTotalSum();
+        }
+
+        function removeProductRow(btn) {
+            const row = btn.closest('div.border');
+            if (row) row.remove();
+            calculateTotalSum();
+        }
+
+        function handleDeliveryExtras() {
+            const method = document.getElementById('deliveryMethod').value;
+            const europost = document.getElementById('europostBlock');
+            const belpost = document.getElementById('belpostBlock');
+            europost.classList.add('hidden');
+            belpost.classList.add('hidden');
+            if (method === 'Европочта') {
+                europost.classList.remove('hidden');
+            }
+            if (method === 'Белпочта') {
+                belpost.classList.remove('hidden');
+            }
+        }
+
+        function calculateTotalSum() {
+            const rate = Number(settings.yuanRate || 0);
+            let sum = 0;
+            document.querySelectorAll('#productsContainer .border').forEach(row => {
+                const price = Number(row.querySelector('.product-price')?.value || 0);
+                const qty = Number(row.querySelector('.product-qty')?.value || 0);
+                sum += price * rate * qty;
+            });
+            document.getElementById('totalSum').textContent = sum.toFixed(2);
+        }
+
+        /* =============================
+           ORDER SUBMIT (client)
+        ==============================*/
+        document.getElementById('orderForm').addEventListener('input', calculateTotalSum);
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const totalSumValue = parseFloat(document.getElementById('totalSum').textContent) || 0;
+            if (totalSumValue < 100) {
+                showToast('Минимальная сумма заказа — 100 BYN. Добавьте товары или увеличьте количество.', 'warning');
+                return;
+            }
+            const method = document.getElementById('deliveryMethod').value;
+            if (!method) {
+                showToast('Выберите способ доставки', 'warning');
+                return;
+            }
+            const products = [];
+            document.querySelectorAll('#productsContainer .border').forEach(row => {
+                const link = (row.querySelector('.product-link')?.value || '').trim();
+                const price = Number(row.querySelector('.product-price')?.value || 0);
+                const quantity = Number(row.querySelector('.product-qty')?.value || 0);
+                // пропускаем пустые строки
+                if (!link || price <= 0 || quantity <= 0) return;
+                products.push({
+                    link,
+                    price,
+                    quantity,
+                    color: row.querySelector('.product-color')?.value || '',
+                    size: row.querySelector('.product-size')?.value || '',
+                    needPhoto: row.querySelector('.product-need-photo')?.checked || false,
+                    comment: row.querySelector('.product-comment')?.value || '',
+                });
+            });
+            if (!products.length) {
+                showToast('Добавьте хотя бы один товар с ценой и количеством', 'warning');
+                return;
+            }
+
+            // delivery details
+            const deliveryDetails = {};
+            if (method === 'Европочта') deliveryDetails.europostBranch = document.getElementById('europostBranch').value;
+            if (method === 'Белпочта') {
+                deliveryDetails.index = document.getElementById('belpostIndex').value;
+                deliveryDetails.city = document.getElementById('belpostCity').value;
+                deliveryDetails.street = document.getElementById('belpostStreet').value;
+                deliveryDetails.house = document.getElementById('belpostHouse').value;
+            }
+
+            // upload receipt (optional)
+            const receiptFile = document.getElementById('paymentReceipt').files[0];
+            let receiptBase64 = null;
+            if (receiptFile) {
+                receiptBase64 = await fileToBase64(receiptFile);
+            }
+
+            orderCounter += 1;
+            const orderId = `BY-${orderCounter.toString().padStart(2,'0')}`;
+            const newOrder = {
+                id: orderId,
+                userId: currentUser.userKey || currentUser.phone,
+                userPhone: currentUser.phone || '',
+                userName: currentUser.fullName,
+                userTelegram: currentUser.telegram,
+                deliveryMethod: method,
+                deliveryDetails,
+                products,
+                totalSum: totalSumValue,
+                receipt: receiptBase64,
+                deliveryCost: null,
+                totalToPay: null,
+                deliveryReceipt: null,
+                totalWeight: 0,
+                productPhotos: [],
+                status: 'Ожидает оплаты',
+                createdAt: new Date().toISOString()
+            };
+            orders.push(newOrder);
+            await persistOrder(newOrder);
+            localStorage.setItem('orderCounter', orderCounter);
+            showPaymentModal(orderId, settings.paymentDetails || '');
+            showToast('Заказ создан! Номер: ' + orderId, 'success');
+            document.getElementById('orderForm').reset();
+            document.getElementById('productsContainer').innerHTML = '';
+            addProductRow();
+            loadClientOrders();
+        });
+
+        async function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleReceiptUpload(orderId, kind, inputEl) {
+            try {
+                const file = inputEl.files?.[0];
+                if (!file) return;
+                const base64 = await fileToBase64(file);
+                const order = orders.find(o => o.id === orderId);
+                if (!order) return;
+                if (kind === 'delivery') order.deliveryReceipt = base64; else order.receipt = base64;
+                await persistOrder(order);
+                showToast('Чек сохранён', 'success');
+                loadClientOrders();
+                loadAdminOrders();
+            } catch (err) {
+                console.error('Receipt upload error:', err);
+                showToast('Не удалось сохранить чек', 'error');
+            } finally {
+                inputEl.value = '';
+            }
+        }
+
+        function loadClientOrders() {
+            const list = document.getElementById('clientOrders');
+            list.innerHTML = '';
+            const userKey = currentUser.userKey || currentUser.phone;
+            const allOrders = orders.filter(o => o.userId === userKey);
+
+            // фильтрация по поиску
+            const q = (clientSearchTerm || '').trim().toLowerCase();
+            const userOrders = q ? allOrders.filter(o => (o.id || '').toLowerCase().includes(q)) : allOrders;
+
+            userOrders.forEach(o => {
+                const productsHtml = (o.products || []).map((p, idx) => `
+                    <div class="flex items-start gap-3 border-b pb-2 mb-2">
+                        <div class="text-gray-400 text-sm">${idx + 1}.</div>
+                        <div class="flex-1 text-sm">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <a href="${p.link || '#'}" target="_blank" class="text-purple-600 break-all">${p.link || '—'}</a>
+                                ${p.trackingNumber ? `<span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">Трек: ${p.trackingNumber}</span>` : ''}
+                            </div>
+                            <p class="text-gray-600 text-xs">${p.quantity || 1} шт × ${p.price || 0} ¥</p>
+                            ${(p.color || p.size) ? `<p class="text-xs text-gray-500">${p.color || ''} ${p.size || ''}</p>` : ''}
+                            ${p.needPhoto ? `<p class="text-xs text-amber-600">Нужно фото со склада</p>` : ''}
+                            <div class="mt-2 grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                                ${p.warehousePhoto ? `<button type="button" onclick="openPhotoModal('${p.warehousePhoto}')" class="inline-block w-20 h-20 sm:w-16 sm:h-16 border rounded overflow-hidden bg-gray-50"><img src="${p.warehousePhoto}" alt="Фото со склада" class="w-full h-full object-cover"></button>` : ''}
+                                ${p.productPhoto ? `<button type="button" onclick="openPhotoModal('${p.productPhoto}')" class="inline-block w-20 h-20 sm:w-16 sm:h-16 border rounded overflow-hidden bg-gray-50"><img src="${p.productPhoto}" alt="Фото товара" class="w-full h-full object-cover"></button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                const deliveryInfo = o.deliveryMethod ? `<div class="mt-2 text-sm text-gray-700">🚚 ${o.deliveryMethod}${o.deliveryDetails ? ' — ' + Object.values(o.deliveryDetails).filter(Boolean).join(', ') : ''}</div>` : '';
+
+                const deliveryCosts = `
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm mt-2">
+                        <span class="bg-gray-50 border rounded px-3 py-2">Сумма товаров: <strong>${o.totalSum.toFixed(2)} BYN</strong></span>
+                        <span class="bg-blue-50 border border-blue-100 rounded px-3 py-2">Доставка: <strong>${o.deliveryCost!=null ? Number(o.deliveryCost).toFixed(2) : '—'} BYN</strong></span>
+                        <span class="bg-green-50 border border-green-100 rounded px-3 py-2">К оплате за доставку: <strong>${o.totalToPay!=null ? Number(o.totalToPay).toFixed(2) : '—'} BYN</strong></span>
+                    </div>`;
+
+                const receiptsBlock = `
+                    <div class="mt-3 space-y-2">
+                        <div class="flex items-center justify_between gap-2 text-sm bg-gray-50 border rounded px-3 py-2">
+                            <div>
+                                <p class="font-semibold text-gray-800">Чек оплаты товара</p>
+                                <p class="text-xs text-gray-500">Загрузите чек, если ещё не загрузили</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${o.receipt ? `<button type=\"button\" onclick=\"openPhotoModal('${o.receipt}')\" class=\"text-purple-600 text-xs underline\">Открыть</button>` : ''}
+                                <label class="text-xs text-blue-600 underline cursor-pointer">
+                                    ${o.receipt ? 'Заменить чек' : 'Загрузить чек'}
+                                    <input type="file" accept="image/*" class="hidden" onchange="handleReceiptUpload('${o.id}','goods',this)">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between gap-2 text-sm bg-gray-50 border rounded px-3 py-2">
+                            <div>
+                                <p class="font-semibold text-gray-800">Чек оплаты доставки</p>
+                                <p class="text-xs text-gray-500">Появится после расчёта веса</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${o.deliveryReceipt ? `<button type=\"button\" onclick=\"openPhotoModal('${o.deliveryReceipt}')\" class=\"text-purple-600 text-xs underline\">Открыть</button>` : ''}
+                                <label class="text-xs text-blue-600 underline cursor-pointer">
+                                    ${o.deliveryReceipt ? 'Заменить чек' : 'Загрузить чек'}
+                                    <input type="file" accept="image/*" class="hidden" onchange="handleReceiptUpload('${o.id}','delivery',this)">
+                                </label>
+                            </div>
+                        </div>
+                    </div>`;
+
+                const card = document.createElement('div');
+                card.className = 'rounded-2xl border border-gray-100 bg-white p-4 shadow space-y-2';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-xs text-gray-500">Заказ</p>
+                            <p class="text-lg font-bold">${o.id}</p>
+                            <p class="text-[11px] text-gray-400 mt-1">${new Date(o.createdAt).toLocaleString()}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-700">${o.status}</span>
+                    </div>
+                    ${deliveryInfo}
+                    ${deliveryCosts}
+                    <div class="mt-2 text-sm text-gray-800">Товары:</div>
+                    <div>${productsHtml || '<p class="text-xs text-gray-500">Нет товаров</p>'}</div>
+                    ${receiptsBlock}
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        /* =============================
+           LOCAL FALLBACK SAVERS
+        ==============================*/
+        function saveUsers() { localStorage.setItem('users', JSON.stringify(users)); }
+        function saveOrders() { localStorage.setItem('orders', JSON.stringify(orders)); }
+        function saveSettings() { localStorage.setItem('settings', JSON.stringify(settings)); }
+
+        /* =============================
+           ADMIN PANEL NAVIGATION
+        ==============================*/
+        async function showAdminPanel() {
+            hideAllViews();
+            await initData();
+            document.getElementById('adminView').classList.remove('hidden');
+            loadAdminSettings();
+            loadAdminOrders();
+            loadAdminUsers();
+            updateStatistics();
+        }
+
+        function showAdminTab(tab) {
+            const tabs = ['orders','finance','users','settings'];
+            tabs.forEach(t => {
+                document.getElementById(`admin${t.charAt(0).toUpperCase()+t.slice(1)}Tab`).classList.add('hidden');
+                document.getElementById(`tab${t.charAt(0).toUpperCase()+t.slice(1)}`).classList.remove('bg-white','text-purple-900','shadow-lg','transform','scale-105');
+                document.getElementById(`tab${t.charAt(0).toUpperCase()+t.slice(1)}`).classList.add('bg-white/10','text-white');
+            });
+            document.getElementById(`admin${tab.charAt(0).toUpperCase()+tab.slice(1)}Tab`).classList.remove('hidden');
+            const btn = document.getElementById(`tab${tab.charAt(0).toUpperCase()+tab.slice(1)}`);
+            btn.classList.add('bg-white','text-purple-900','shadow-lg','transform','scale-105');
+            btn.classList.remove('bg-white/10','text-white');
+        }
+
+        function toggleCurrentMonth() {
+            const checked = document.getElementById('filterCurrentMonth').checked;
+            if (checked) {
+                const now = new Date();
+                document.getElementById('filterYear').value = String(now.getFullYear());
+                document.getElementById('filterMonth').value = String(now.getMonth());
+            } else {
+                document.getElementById('filterMonth').value = 'all';
+            }
+            loadAdminOrders();
+        }
+
+        /* =============================
+           ADMIN SETTINGS (UI)
+        ==============================*/
+        function loadAdminSettings() {
+            document.getElementById('yuanRate').value = settings.yuanRate;
+            document.getElementById('kgPrice').value = settings.kgPrice;
+            document.getElementById('costYuan').value = settings.costYuan;
+            document.getElementById('costKg').value = settings.costKg;
+            document.getElementById('taxPercent').value = settings.taxPercent;
+            document.getElementById('paymentDetails').value = settings.paymentDetails || '';
+            const forbList = document.getElementById('forbiddenItemsAdminList');
+            forbList.innerHTML = '';
+            settings.forbiddenItems.forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between bg-red-50 border border-red-100 px-3 py-2 rounded-lg';
+                row.innerHTML = `<span class="text-sm text-red-700">${item}</span><button class="text-xs text-red-600 hover:text-red-800" onclick="removeForbiddenItem(${idx})">Удалить</button>`;
+                forbList.appendChild(row);
+            });
+            const delList = document.getElementById('deliveryMethodsList');
+            delList.innerHTML = '';
+            settings.deliveryMethods.forEach((m, idx) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between bg-green-50 border border-green-100 px-3 py-2 rounded-lg';
+                row.innerHTML = `<span class="text-sm text-green-700">${m}</span><button class="text-xs text-green-600 hover:text-green-800" onclick="removeDeliveryMethod(${idx})">Удалить</button>`;
+                delList.appendChild(row);
+            });
+        }
+
+        async function saveRates() {
+            settings.yuanRate = Number(document.getElementById('yuanRate').value || 0);
+            settings.kgPrice = Number(document.getElementById('kgPrice').value || 0);
+            settings.costYuan = Number(document.getElementById('costYuan').value || 0);
+            settings.costKg = Number(document.getElementById('costKg').value || 0);
+            settings.taxPercent = Number(document.getElementById('taxPercent').value || 0);
+            await persistSettings();
+            await fetchSettings();
+            loadAdminSettings();
+            showToast('Расценки сохранены','success');
+        }
+        async function savePaymentDetails() {
+            settings.paymentDetails = document.getElementById('paymentDetails').value || '';
+            await persistSettings();
+            await fetchSettings();
+            loadAdminSettings();
+            showToast('Реквизиты сохранены','success');
+        }
+        async function addForbiddenItem() {
+            const val = document.getElementById('newForbiddenItem').value.trim();
+            if (!val) return;
+            settings.forbiddenItems.push(val);
+            document.getElementById('newForbiddenItem').value='';
+            await persistSettings();
+            await fetchSettings();
+            loadAdminSettings();
+        }
+        async function removeForbiddenItem(idx){
+            settings.forbiddenItems.splice(idx,1);
+            await persistSettings();
+            await fetchSettings();
+            loadAdminSettings();
+        }
+        async function addDeliveryMethod() {
+            const val = document.getElementById('newDeliveryMethod').value.trim();
+            if (!val) return;
+            settings.deliveryMethods.push(val);
+            document.getElementById('newDeliveryMethod').value='';
+            await persistSettings();
+            await fetchSettings();
+            loadAdminSettings();
+        }
+        async function removeDeliveryMethod(idx){
+            settings.deliveryMethods.splice(idx,1);
+            await persistSettings();
+            await fetchSettings();
+            loadAdminSettings();
+        }
+
+        /* =============================
+           ADMIN ORDERS LIST
+        ==============================*/
+        function loadAdminOrders() {
+            const year = document.getElementById('filterYear').value;
+            const month = document.getElementById('filterMonth').value;
+            const sortStatus = document.getElementById('sortByStatus').checked;
+            let filtered = [...orders];
+            filtered = filtered.filter(o => {
+                const d = new Date(o.createdAt);
+                if (String(d.getFullYear()) !== String(year)) return false;
+                if (month !== 'all' && d.getMonth() !== Number(month)) return false;
+                return true;
+            });
+            if (sortStatus) {
+                filtered.sort((a,b) => statusFlow.indexOf(a.status) - statusFlow.indexOf(b.status));
+            } else {
+                filtered.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+            }
+            const wrap = document.getElementById('adminOrders');
+            wrap.innerHTML='';
+            filtered.forEach(o => {
+                const card = document.createElement('div');
+                card.className='bg-white rounded-2xl shadow p-4 border border-gray-100';
+                const productsHtml = o.products.map((p,i)=>`
+                    <div class="flex items-start gap-3 border-b pb-2 mb-2">
+                        <div class="text-gray-400 text-sm">${i+1}.</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <a href="${p.link}" target="_blank" class="text-purple-600 text-sm break-all">${p.link || '—'}</a>
+                                ${p.trackingNumber ? `<span class='text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded'>Трек: ${p.trackingNumber}</span>`: ''}
+                            </div>
+                            <p class="text-xs text-gray-500">${p.quantity || 1} шт × ${p.price || 0} ¥</p>
+                            ${p.color||p.size ? `<p class='text-xs text-gray-500'>${p.color||''} ${p.size||''}</p>`:''}
+                            ${p.needPhoto ? `<p class='text-xs text-amber-600'>Нужно фото со склада</p>`:''}
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                ${p.warehousePhoto ? `<button type="button" onclick="openPhotoModal('${p.warehousePhoto}')" class="inline-block w-16 h-16 border rounded overflow-hidden"><img src="${p.warehousePhoto}" alt="Фото со склада" class="w-full h-full object-cover"></button>` : ''}
+                                ${p.productPhoto ? `<button type="button" onclick="openPhotoModal('${p.productPhoto}')" class="inline-block w-16 h-16 border rounded overflow-hidden"><img src="${p.productPhoto}" alt="Фото товара" class="w-full h-full object-cover"></button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                const deliveryInfo = o.deliveryMethod ? `<div class="mt-2 text-sm text-gray-700">🚚 ${o.deliveryMethod}${o.deliveryDetails ? ' — '+Object.values(o.deliveryDetails).filter(Boolean).join(', ') : ''}</div>`: '';
+                const statusSelect = `
+                    <select onchange="changeOrderStatus('${o.id}', this.value)" class="px-3 py-1 rounded-lg border text-sm focus:ring-2 focus:ring-purple-500">
+                        ${statusFlow.map(st=>`<option value="${st}" ${st===o.status?'selected':''}>${st}</option>`).join('')}
+                    </select>`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <p class="text-xs text-gray-500">${new Date(o.createdAt).toLocaleString()}</p>
+                            <h3 class="text-lg font-bold">${o.id}</h3>
+                            <p class="text-sm text-gray-600">${o.userName || ''} (${o.userTelegram||''})</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            ${statusSelect}
+                        </div>
+                    </div>
+                    ${deliveryInfo}
+                    <div class="mt-3 text-sm text-gray-800">Товары:</div>
+                    <div class="mt-1">${productsHtml || '<p class="text-xs text-gray-500">Нет товаров</p>'}</div>
+                    <div class="flex flex-wrap gap-2 mt-3 text-sm">
+                        <span class="bg-gray-100 px-3 py-1 rounded">Сумма: ${o.totalSum.toFixed(2)} BYN</span>
+                        ${o.deliveryCost!=null ? `<span class="bg-blue-50 text-blue-700 px-3 py-1 rounded">Доставка: ${Number(o.deliveryCost).toFixed(2)} BYN</span>`:''}
+                        ${o.totalToPay!=null ? `<span class="bg-green-50 text-green-700 px-3 py-1 rounded">К оплате: ${Number(o.totalToPay).toFixed(2)} BYN</span>`:''}
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div class="bg-gray-50 border rounded px-3 py-2 flex items-center justify-between">
+                            <div>
+                                <p class="font-semibold text-gray-800">Чек оплаты товара</p>
+                                <p class="text-xs text-gray-500">Загружен клиентом</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${o.receipt ? `<button type="button" onclick="openPhotoModal('${o.receipt}')" class="text-purple-600 text-xs underline">Открыть</button>` : '<span class="text-xs text-gray-400">нет</span>'}
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 border rounded px-3 py-2 flex items-center justify-between">
+                            <div>
+                                <p class="font-semibold text-gray-800">Чек оплаты доставки</p>
+                                <p class="text-xs text-gray-500">Загружен клиентом</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${o.deliveryReceipt ? `<button type="button" onclick="openPhotoModal('${o.deliveryReceipt}')" class="text-purple-600 text-xs underline">Открыть</button>` : '<span class="text-xs text-gray-400">нет</span>'}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <button class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-sm" onclick="openWeightModal('${o.id}')">Ввести вес</button>
+                        <button class="px-3 py-2 rounded-lg bg-amber-50 text-amber-700 text-sm" onclick="openEditOrder('${o.id}')">✏️ Редактировать</button>
+                        <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" class="order-select" value="${o.id}"> Выбрать</label>
+                        <button class="px-3 py-2 rounded-lg bg-gray-50 text-gray-700 text-sm" onclick="notifyClient('${o.id}')">📢 Уведомить</button>
+                        <button class="px-3 py-2 rounded-lg bg-red-50 text-red-700 text-sm" onclick="removeOrder('${o.id}')">Удалить</button>
+                    </div>
+                `;
+                wrap.appendChild(card);
+            });
+        }
+
+        function removeOrder(id){
+            if(!confirm('Удалить заказ?')) return;
+            deleteOrder(id).then(()=>{loadAdminOrders(); loadClientOrders(); updateStatistics();});
+        }
+
+        /* =============================
+           ADMIN USERS LIST (pretty cards)
+        ==============================*/
+        function loadAdminUsers() {
+            const wrap = document.getElementById('adminUsers');
+            wrap.innerHTML='';
+
+            // если нет явного списка users из БД, собираем из заказов
+            const usersMap = {};
+            if (Array.isArray(users) && users.length) {
+                users.forEach(u => {
+                    usersMap[u.id || u.phone] = {
+                        name: u.fullName || 'Без имени',
+                        phone: u.phone || '—',
+                        tg: u.telegram || '—',
+                        registeredAt: u.registeredAt || ''
+                    };
+                });
+            } else {
+                orders.forEach(o => {
+                    if (!o.userId) return;
+                    const phoneSafe = o.userPhone || o.userId || '—';
+                    usersMap[o.userId] = {
+                        name: o.userName || 'Без имени',
+                        phone: phoneSafe,
+                        tg: o.userTelegram || '—',
+                        registeredAt: o.createdAt || ''
+                    };
+                });
+            }
+
+            const palette = ['from-indigo-500 to-purple-600','from-emerald-500 to-teal-600','from-orange-500 to-amber-600','from-blue-500 to-cyan-600','from-pink-500 to-rose-600'];
+
+            Object.entries(usersMap).forEach(([key, u], idx) => {
+                const initials = (u.name||'').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase() || 'U';
+                const grad = palette[idx % palette.length];
+                const card = document.createElement('div');
+                card.className='bg-white/90 backdrop-blur rounded-2xl border border-gray-100 p-4 shadow-md flex items-center gap-4 hover:-translate-y-1 hover:shadow-xl transition';
+                card.innerHTML = `
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${grad} text-white flex items-center justify-center text-lg font-bold shadow-lg">${initials}</div>
+                    <div class="flex-1 space-y-1">
+                        <p class="font-semibold text-gray-900 text-sm">${u.name||'Без имени'}</p>
+                        <p class="text-xs text-gray-500">Телефон: ${u.phone||'—'}</p>
+                        <p class="text-xs text-gray-500">Telegram: ${u.tg||'—'}</p>
+                        ${u.registeredAt ? `<p class="text-[11px] text-gray-400">Зарегистрирован: ${new Date(u.registeredAt).toLocaleString()}</p>` : ''}
+                    </div>
+                    <div class="px-3 py-1 text-xs rounded-full bg-gray-50 border text-gray-600">Клиент</div>
+                `;
+                wrap.appendChild(card);
+            });
+        }
+
+        /* =============================
+           EDIT ORDER
+        ==============================*/
+        function openEditOrder(id){
+            currentEditOrderId = id;
+            const order = orders.find(o=>o.id===id);
+            if(!order) return;
+            document.getElementById('editOrderId').textContent = id;
+            const sel = document.getElementById('editDeliveryMethod');
+            sel.innerHTML='';
+            settings.deliveryMethods.forEach(m=>{
+                const opt = document.createElement('option');
+                opt.value=m; opt.textContent=m; if(m===order.deliveryMethod) opt.selected=true; sel.appendChild(opt);
+            });
+            document.getElementById('editEuropostBranch').value = order.deliveryDetails?.europostBranch||'';
+            document.getElementById('editBelpostIndex').value = order.deliveryDetails?.index||'';
+            document.getElementById('editBelpostCity').value = order.deliveryDetails?.city||'';
+            document.getElementById('editBelpostStreet').value = order.deliveryDetails?.street||'';
+            document.getElementById('editBelpostHouse').value = order.deliveryDetails?.house||'';
+            handleEditDeliveryExtras();
+            const cont = document.getElementById('editProductsContainer');
+            cont.innerHTML='';
+            order.products.forEach((p,idx)=>{
+                const row = document.createElement('div');
+                row.className='border rounded-lg p-3 bg-white';
+                row.innerHTML=`
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold">Товар ${idx+1}</span>
+                        <button type="button" class="text-red-500 text-sm" onclick="removeEditProductRow(this)">Удалить</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <input class="edit-link px-3 py-2 border rounded" placeholder="Ссылка" value="${p.link||''}">
+                        <input class="edit-price px-3 py-2 border rounded" type="number" step="0.01" value="${p.price||0}">
+                        <input class="edit-qty px-3 py-2 border rounded" type="number" step="1" value="${p.quantity||1}">
+                        <input class="edit-color px-3 py-2 border rounded" placeholder="Цвет" value="${p.color||''}">
+                        <input class="edit-size px-3 py-2 border rounded" placeholder="Размер" value="${p.size||''}">
+                        <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" class="edit-needphoto" ${p.needPhoto?'checked':''}> Нужно фото</label>
+                        <input class="edit-track px-3 py-2 border rounded" placeholder="Трек-номер" value="${p.trackingNumber||''}">
+                        <textarea class="edit-comment px-3 py-2 border rounded md:col-span-2" rows="2" placeholder="Комментарий">${p.comment||''}</textarea>
+                    </div>`;
+                cont.appendChild(row);
+            });
+            document.getElementById('editOrderModal').classList.remove('hidden');
+        }
+
+        function removeEditProductRow(btn){
+            const row = btn.closest('.border');
+            if(row) row.remove();
+        }
+
+        function handleEditDeliveryExtras(){
+            const method = document.getElementById('editDeliveryMethod').value;
+            const e1 = document.getElementById('editEuropostBlock');
+            const e2 = document.getElementById('editBelpostBlock');
+            e1.classList.add('hidden'); e2.classList.add('hidden');
+            if (method==='Европочта') e1.classList.remove('hidden');
+            if (method==='Белпочта') e2.classList.remove('hidden');
+        }
+
+        async function saveEditOrder(){
+            const order = orders.find(o=>o.id===currentEditOrderId);
+            if(!order) return;
+            order.deliveryMethod = document.getElementById('editDeliveryMethod').value;
+            const dd = {};
+            if(order.deliveryMethod==='Европочта') dd.europostBranch = document.getElementById('editEuropostBranch').value;
+            if(order.deliveryMethod==='Белпочта') {
+                dd.index = document.getElementById('editBelpostIndex').value;
+                dd.city = document.getElementById('editBelpostCity').value;
+                dd.street = document.getElementById('editBelpostStreet').value;
+                dd.house = document.getElementById('editBelpostHouse').value;
+            }
+            order.deliveryDetails = dd;
+            const rows = document.querySelectorAll('#editProductsContainer .border');
+            const prods = [];
+            rows.forEach(r=>{
+                prods.push({
+                    link: r.querySelector('.edit-link').value,
+                    price: Number(r.querySelector('.edit-price').value||0),
+                    quantity: Number(r.querySelector('.edit-qty').value||1),
+                    color: r.querySelector('.edit-color').value,
+                    size: r.querySelector('.edit-size').value,
+                    needPhoto: r.querySelector('.edit-needphoto').checked,
+                    trackingNumber: r.querySelector('.edit-track').value,
+                    comment: r.querySelector('.edit-comment').value
+                });
+            });
+            order.products = prods;
+            // пересчитать сумму заказа
+            const rate = Number(settings.yuanRate||0);
+            order.totalSum = prods.reduce((s,p)=> s + (Number(p.price||0)*Number(p.quantity||0)*rate),0);
+            await persistOrder(order);
+            saveOrders();
+            loadAdminOrders();
+            loadClientOrders();
+            updateStatistics();
+            closeEditOrder();
+            showToast('Заказ обновлен','success');
+        }
+        function closeEditOrder(){
+            const m=document.getElementById('editOrderModal'); if(m) m.classList.add('hidden');
+        }
+
+        /* =============================
+           WEIGHT MODAL / DELIVERY COST
+        ==============================*/
+        function openWeightModal(id){
+            currentWeightOrderId = id;
+            const order = orders.find(o=>o.id===id);
+            if(!order) return;
+            document.getElementById('weightOrderId').textContent = id;
+            const cont = document.getElementById('weightProductsContainer');
+            cont.innerHTML='';
+            order.products.forEach((p,idx)=>{
+                const row = document.createElement('div');
+                row.className='border rounded-lg p-3 bg-white';
+                row.innerHTML=`
+                    <p class="text-sm font-semibold mb-2">Товар ${idx+1}</p>
+                    <p class="text-xs text-gray-500 break-all mb-2">${p.link||''}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                        <input type="number" step="0.01" class="w-full px-3 py-2 border rounded weight-input" placeholder="Вес, кг" value="${p.weight||''}">
+                        <input type="text" class="w-full px-3 py-2 border rounded track-input" placeholder="Трек-номер" value="${p.trackingNumber||''}">
+                        <input type="file" accept="image/*" class="w-full px-3 py-1 border rounded warehouse-photo-input" ${p.needPhoto ? '' : 'hidden'}>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        <div class="text-xs text-gray-500 md:col-span-3">${p.needPhoto ? 'Фото со склада (если нужно фото)' : 'Фото со склада не требуется'}</div>
+                        <div class="md:col-span-3 flex flex-wrap gap-2 items-center">
+                            ${p.warehousePhoto ? `<a href="${p.warehousePhoto}" target="_blank" class="text-xs text-blue-600 underline">Фото со склада уже загружено (обновить можно ниже)</a>` : ''}
+                        </div>
+                        <label class="text-sm font-medium md:col-span-3">Фото товара (опционально)</label>
+                        <input type="file" accept="image/*" class="w-full px-3 py-1 border rounded product-photo-input md:col-span-3">
+                        ${p.productPhoto ? `<div class="md:col-span-3 text-xs text-blue-600">Фото товара уже загружено — можно обновить.</div>` : ''}
+                    </div>
+                `;
+                cont.appendChild(row);
+            });
+            document.getElementById('weightModal').classList.remove('hidden');
+        }
+        function closeWeightModal(){ const m=document.getElementById('weightModal'); if(m) m.classList.add('hidden'); }
+
+        async function changeOrderStatus(orderId, newStatus){
+            const order = orders.find(o=>o.id===orderId);
+            if(!order) return;
+            order.status = newStatus;
+            await persistOrder(order);
+            loadAdminOrders();
+            loadClientOrders();
+            updateStatistics();
+            showToast('Статус обновлён','success');
+        }
+
+        async function saveWeightData(){
+            const order = orders.find(o=>o.id===currentWeightOrderId);
+            if(!order) return;
+            const rows = document.querySelectorAll('#weightProductsContainer .border');
+            let totalWeight = 0;
+            const prods = order.products.map((p,idx)=>{
+                const row = rows[idx];
+                const w = Number(row.querySelector('.weight-input').value||0);
+                const track = row.querySelector('.track-input').value;
+                const fileWarehouse = row.querySelector('.warehouse-photo-input')?.files?.[0];
+                const fileProduct = row.querySelector('.product-photo-input')?.files?.[0];
+                totalWeight += w;
+                return {
+                    ...p,
+                    weight: w,
+                    trackingNumber: track,
+                    warehousePhoto: p.warehousePhoto || null,
+                    productPhoto: p.productPhoto || null,
+                    _fileWarehouse: fileWarehouse,
+                    _fileProduct: fileProduct
+                };
+            });
+            // загрузка фото
+            for (let i=0;i<prods.length;i++){
+                if (prods[i]._fileWarehouse){
+                    prods[i].warehousePhoto = await fileToBase64(prods[i]._fileWarehouse);
+                }
+                if (prods[i]._fileProduct){
+                    prods[i].productPhoto = await fileToBase64(prods[i]._fileProduct);
+                }
+                delete prods[i]._fileWarehouse;
+                delete prods[i]._fileProduct;
+            }
+            order.products = prods;
+            order.totalWeight = totalWeight;
+            order.deliveryCost = Number(totalWeight * (settings.kgPrice||0));
+            order.totalToPay = order.deliveryCost;
+            await persistOrder(order);
+            loadAdminOrders();
+            loadClientOrders();
+            updateStatistics();
+            closeWeightModal();
+            showToast('Данные доставки сохранены','success');
+        }
+
+        /* =============================
+           CLIENT SEARCH
+        ==============================*/
+        function searchClientOrders(){
+            clientSearchTerm = document.getElementById('searchOrder').value || '';
+            loadClientOrders();
+        }
+
+        /* =============================
+           FINANCE / STATS (simple)
+        ==============================*/
+        function calcProfitData(filterFn){
+            const rate = Number(settings.yuanRate||0);
+            const costY = Number(settings.costYuan||0);
+            const costK = Number(settings.costKg||0);
+            const taxP = Number(settings.taxPercent||0)/100;
+            let revenueGoods=0, costGoods=0, revenueDel=0, costDel=0, paidSum=0, totalOrders=0, paidOrders=0;
+            orders.filter(filterFn).forEach(o=>{
+                totalOrders++;
+                if (['Оплачен','Выкуплен','Отправлен из Китая','Прибыл в Москву','Доставляется в Беларусь','Доставлен'].includes(o.status)) paidOrders++;
+                if (o.status!=='Ожидает оплаты') paidSum += Number(o.totalSum||0);
+                o.products.forEach(p=>{
+                    revenueGoods += Number(p.price||0)*Number(p.quantity||0)*rate;
+                    costGoods += Number(p.price||0)*Number(p.quantity||0)*costY;
+                });
+                revenueDel += Number(o.deliveryCost||0);
+                costDel += Number(o.totalWeight||0)*costK;
+            });
+            const taxGoods = revenueGoods * taxP;
+            const taxDel = revenueDel * taxP;
+            const netGoods = revenueGoods - taxGoods - costGoods;
+            const netDel = revenueDel - taxDel - costDel;
+            return {
+                revenueGoods,costGoods,taxGoods,netGoods,
+                revenueDel,costDel,taxDel,netDel,
+                totalNet: netGoods+netDel,
+                totalTax: taxGoods+taxDel,
+                totalOrders,paidOrders,paidSum
+            };
+        }
+
+        function updateFinanceSummaryCurrentMonth(){
+            const now = new Date();
+            const filter = (o)=>{
+                const d=new Date(o.createdAt);
+                return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+            };
+            const data = calcProfitData(filter);
+            const setText = (id,val)=>{const el=document.getElementById(id); if(el) el.textContent=val;};
+            setText('calcTotalNetProfitFinal', `${data.totalNet.toFixed(2)} BYN`);
+            setText('calcTotalTax', `${data.totalTax.toFixed(2)} BYN`);
+            setText('calcTotalPaidOrders', `${data.paidSum.toFixed(2)} BYN`);
+            setText('calcProfitGoods', data.revenueGoods.toFixed(2));
+            setText('calcCostGoods', data.costGoods.toFixed(2));
+            setText('calcTaxGoods', data.taxGoods.toFixed(2));
+            setText('calcNetProfitGoods', data.netGoods.toFixed(2));
+            setText('calcProfitDelivery', data.revenueDel.toFixed(2));
+            setText('calcCostDelivery', data.costDel.toFixed(2));
+            setText('calcTaxDelivery', data.taxDel.toFixed(2));
+            setText('calcNetProfitDelivery', data.netDel.toFixed(2));
+            setText('calcTotalNetProfit', data.totalNet.toFixed(2));
+        }
+
+        function updateStatistics(){
+            const year = document.getElementById('statsYear').value;
+            const month = document.getElementById('statsMonth').value;
+            const type = document.getElementById('statsType').value;
+
+            const summaryBlock = document.getElementById('summaryStats');
+            const monthlyBlock = document.getElementById('monthlyStats');
+            const yearlyBlock = document.getElementById('yearlyStats');
+            summaryBlock.classList.add('hidden');
+            monthlyBlock.classList.add('hidden');
+            yearlyBlock.classList.add('hidden');
+
+            const filter = (o)=>{
+                const d=new Date(o.createdAt);
+                if(String(d.getFullYear())!==String(year)) return false;
+                if(month!=='all' && d.getMonth()!==Number(month)) return false;
+                return true;
+            };
+            const data = calcProfitData(filter);
+            // summary
+            document.getElementById('statsProfitGoods').textContent = data.netGoods.toFixed(2)+' BYN';
+            document.getElementById('statsProfitDelivery').textContent = data.netDel.toFixed(2)+' BYN';
+            document.getElementById('statsTotalProfit').textContent = data.totalNet.toFixed(2)+' BYN';
+            document.getElementById('statsTotalTax').textContent = data.totalTax.toFixed(2)+' BYN';
+            document.getElementById('statsTotalOrders').textContent = data.totalOrders;
+            document.getElementById('statsPaidOrders').textContent = data.paidOrders;
+            document.getElementById('statsPaidSum').textContent = data.paidSum.toFixed(2)+' BYN';
+
+            if(type==='summary'){
+                summaryBlock.classList.remove('hidden');
+            }
+            if(type==='monthly'){
+                monthlyBlock.classList.remove('hidden');
+                const cont = document.getElementById('monthlyStatsContent');
+                cont.innerHTML='';
+                for(let m=0;m<12;m++){
+                    const mf = orders.filter(o=>{
+                        const d=new Date(o.createdAt);
+                        return d.getFullYear()===Number(year) && d.getMonth()===m;
+                    });
+                    if(!mf.length) continue;
+                    const ddata = calcProfitData(o=>{
+                        const d=new Date(o.createdAt);
+                        return d.getFullYear()===Number(year) && d.getMonth()===m;
+                    });
+                    const row=document.createElement('div');
+                    row.className='flex justify-between bg-gray-50 border rounded px-3 py-2 text-sm';
+                    row.innerHTML=`<span>${['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'][m]}</span><span class="font-semibold">${ddata.totalNet.toFixed(2)} BYN</span>`;
+                    cont.appendChild(row);
+                }
+            }
+            if(type==='yearly'){
+                yearlyBlock.classList.remove('hidden');
+                const yearsMap={};
+                orders.forEach(o=>{
+                    const y=new Date(o.createdAt).getFullYear();
+                    yearsMap[y]=yearsMap[y]||[];
+                    yearsMap[y].push(o);
+                });
+                const cont=document.getElementById('yearlyStatsContent');
+                cont.innerHTML='';
+                Object.keys(yearsMap).sort().forEach(y=>{
+                    const ddata = calcProfitData(o=> new Date(o.createdAt).getFullYear()===Number(y));
+                    const row=document.createElement('div');
+                    row.className='flex justify-between bg-gray-50 border rounded px-3 py-2 text-sm';
+                    row.innerHTML=`<span>${y}</span><span class="font-semibold">${ddata.totalNet.toFixed(2)} BYN</span>`;
+                    cont.appendChild(row);
+                });
+            }
+
+            // обновляем верхние карточки текущего месяца
+            updateFinanceSummaryCurrentMonth();
+        }
+
+        /* =============================
+           EXPORT CSV (ADMIN)
+        ==============================*/
+        function exportSelectedOrders(){
+            const selected = Array.from(document.querySelectorAll('.order-select:checked')).map(cb=>cb.value);
+            if (!selected.length) return showToast('Выберите заказы для экспорта','warning');
+            const rows = [];
+            selected.forEach(id=>{
+                const o = orders.find(x=>x.id===id);
+                if(!o) return;
+                o.products.forEach((p,idx)=>{
+                    rows.push({
+                        'ID заказа': o.id,
+                        'Создан': new Date(o.createdAt).toLocaleString(),
+                        'Статус': o.status,
+                        'Клиент': o.userName,
+                        'Телефон': o.userPhone || o.userId,
+                        'Telegram': o.userTelegram,
+                        'Способ доставки': o.deliveryMethod,
+                        'Адрес доставки': Object.values(o.deliveryDetails||{}).filter(Boolean).join(', '),
+                        'Товар #': idx+1,
+                        'Ссылка': p.link,
+                        'Цена ¥': p.price,
+                        'Кол-во': p.quantity,
+                        'Цвет': p.color,
+                        'Размер': p.size,
+                        'Нужно фото': p.needPhoto ? 'Да':'Нет',
+                        'Трек-номер': p.trackingNumber||'',
+                        'Комментарий': p.comment||'',
+                        'Сумма заказа BYN': o.totalSum,
+                        'Доставка BYN': o.deliveryCost||'',
+                        'К оплате BYN': o.totalToPay||''
+                    });
+                });
+            });
+            if(!rows.length) return showToast('Нет данных для экспорта','warning');
+            const headers = Object.keys(rows[0]);
+            const csv = [headers.join(',')].concat(rows.map(r=>headers.map(h=>`"${String(r[h]??'').replace(/"/g,'""')}"`).join(','))).join('\n');
+            const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `orders_export_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Экспорт готов','success');
+        }
+
+        /* =============================
+           ADMIN NOTIFY (Telegram helper)
+        ==============================*/
+        function openTelegramChat(username) {
+            if (!username) {
+                showToast('У пользователя не указан Telegram', 'warning');
+                return;
+            }
+            const tg = username.startsWith('@') ? username.slice(1) : username;
+            const url = `https://t.me/${tg}`;
+            window.open(url, '_blank');
+        }
+
+        function notifyClient(orderId){
+            const o = orders.find(x=>x.id===orderId);
+            if(!o) return;
+
+            // Шаблоны по статусу
+            let msg = `🇨🇳 Из Китая с любовью\n\n📦 Заказ #${o.id}\n`;
+            switch (o.status) {
+                case 'Ожидает оплаты':
+                    msg += `Статус: Ожидает оплаты\n💰 Сумма товаров: ${Number(o.totalSum||0).toFixed(2)} BYN\n\nРеквизиты в личном кабинете.`;
+                    break;
+                case 'Оплачен':
+                    msg += `Статус: Оплачен\n💰 Сумма: ${Number(o.totalSum||0).toFixed(2)} BYN\n\nСпасибо за оплату! Скоро выкупим заказ.`;
+                    break;
+                case 'Выкуплен':
+                    msg += `Статус: Выкуплен\n\nОжидаем поступление на склад в Китае.`;
+                    break;
+                case 'Отправлен из Китая':
+                    msg += `Заказ отправлен из Китая!\n`;
+                    if (o.totalWeight) msg += `⚖️ Вес: ${o.totalWeight} кг\n`;
+                    if (o.totalToPay!=null) msg += `💰 К оплате за доставку: ${Number(o.totalToPay).toFixed(2)} BYN\n`;
+                    msg += `\nПожалуйста, загрузите чек оплаты доставки в личном кабинете.`;
+                    break;
+                case 'Прибыл в Москву':
+                    msg += `Статус: Прибыл в Москву\n\nГотовится к отправке в Беларусь.`;
+                    break;
+                case 'Доставляется в Беларусь':
+                    msg += `Статус: Доставляется в Беларусь\n\nМы сообщим, когда заказ будет готов к выдаче.`;
+                    break;
+                case 'Доставлен':
+                    msg += `Статус: Доставлен\n\nСпасибо, что выбрали нас!`;
+                    break;
+                default:
+                    msg += `Статус: ${o.status}\n\nСпасибо за заказ!`;
+            }
+
+            copyTextToClipboard(msg);
+            openTelegramChat(o.userTelegram);
+            showToast('Сообщение скопировано. Вставьте в Telegram и отправьте клиенту.', 'info');
+        }
+
+        function copyTextToClipboard(text){
+            if(navigator.clipboard){ navigator.clipboard.writeText(text); return; }
+            const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        }
+
+        /* =============================
+           INIT DEFAULT TAB
+        ==============================*/
+        showAdminTab('orders');
+
+    </script>
+</body>
+</html>
