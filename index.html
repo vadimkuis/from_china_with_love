@@ -2506,51 +2506,58 @@
             showToast('Статус обновлён','success');
         }
 
-        async function saveWeightData(){
-            const order = orders.find(o=>o.id===currentWeightOrderId);
-            if(!order) return;
-            const rows = document.querySelectorAll('#weightProductsContainer .border');
-            let totalWeight = 0;
-            const prods = order.products.map((p,idx)=>{
-                const row = rows[idx];
-                const w = Number(row.querySelector('.weight-input').value||0);
-                const track = row.querySelector('.track-input').value;
-                const fileWarehouse = row.querySelector('.warehouse-photo-input')?.files?.[0];
-                const fileProduct = row.querySelector('.product-photo-input')?.files?.[0];
-                totalWeight += w;
-                return {
-                    ...p,
-                    weight: w,
-                    trackingNumber: track,
-                    warehousePhoto: p.warehousePhoto || null,
-                    productPhoto: p.productPhoto || null,
-                    _fileWarehouse: fileWarehouse,
-                    _fileProduct: fileProduct
-                };
-            });
-            // загрузка фото
-            for (let i=0;i<prods.length;i++){
-                if (prods[i]._fileWarehouse){
-                    prods[i].warehousePhoto = await fileToBase64(prods[i]._fileWarehouse);
-                }
-                if (prods[i]._fileProduct){
-                    prods[i].productPhoto = await fileToBase64(prods[i]._fileProduct);
-                }
-                delete prods[i]._fileWarehouse;
-                delete prods[i]._fileProduct;
-            }
-            order.products = prods;
-            order.totalWeight = totalWeight;
-            order.deliveryCost = Number(totalWeight * (settings.kgPrice||0));
-            order.totalToPay = order.deliveryCost;
-            await persistOrder(order);
-            loadAdminOrders();
-            loadClientOrders();
-            updateStatistics();
-            closeWeightModal();
-            showToast('Данные доставки сохранены','success');
-        }
+async function saveWeightData() {
+    const order = orders.find(o => o.id === currentWeightOrderId);
+    if (!order) return;
 
+    const rows = document.querySelectorAll('#weightProductsContainer .border');
+    let totalWeight = 0;
+
+    const prods = order.products.map((p, idx) => {
+        const row = rows[idx];
+
+        const w = Number(row.querySelector('.weight-input').value || 0);
+        const track = row.querySelector('.track-input').value;
+        const fileWarehouse = row.querySelector('.warehouse-photo-input')?.files?.[0];
+        const fileProduct = row.querySelector('.product-photo-input')?.files?.[0];
+
+        totalWeight += w;
+
+        return {
+            ...p,                           // ← исправлено: корректно копируем исходный объект товара
+            weight: w,
+            trackingNumber: track,
+            warehousePhoto: p.warehousePhoto || null,
+            productPhoto: p.productPhoto || null,
+            _fileWarehouse: fileWarehouse,
+            _fileProduct: fileProduct
+        };
+    });
+
+    // загрузка фото
+    for (let i = 0; i < prods.length; i++) {
+        if (prods[i]._fileWarehouse) {
+            prods[i].warehousePhoto = await fileToBase64(prods[i]._fileWarehouse);
+        }
+        if (prods[i]._fileProduct) {
+            prods[i].productPhoto = await fileToBase64(prods[i]._fileProduct);
+        }
+        delete prods[i]._fileWarehouse;
+        delete prods[i]._fileProduct;
+    }
+
+    order.products = prods;
+    order.totalWeight = totalWeight;
+    order.deliveryCost = Number(totalWeight * (settings.kgPrice || 0));
+    order.totalToPay = order.deliveryCost;
+
+    await persistOrder(order);
+    loadAdminOrders();
+    loadClientOrders();
+    updateStatistics();
+    closeWeightModal();
+    showToast('Данные доставки сохранены', 'success');
+    }
         /* =============================
            CLIENT SEARCH
         ==============================*/
